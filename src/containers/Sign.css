@@ -1,0 +1,13 @@
+.bg-image {
+  /* The image used */
+  background-image: url("background2.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  width: 100%;
+  height: auto;
+  position: "absolute";
+  top: 0;
+  left: 0;
+}

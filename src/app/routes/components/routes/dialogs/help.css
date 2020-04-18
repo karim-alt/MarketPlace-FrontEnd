@@ -1,0 +1,239 @@
+/*panel*/
+.panel-body a {
+  cursor: auto;
+}
+.panel {
+  border: none;
+  box-shadow: none;
+}
+
+.panel-heading {
+  border-color: #eff2f7;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.panel-title {
+  color: #2a3542;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 0;
+  margin-top: 0;
+
+  font-family: "Open Sans", sans-serif;
+}
+
+/*product list*/
+
+.prod-cat li a {
+  border-bottom: 1px dashed #d9d9d9;
+}
+
+.prod-cat li a {
+  color: #3b3b3b;
+}
+
+.prod-cat li ul {
+  margin-left: 30px;
+}
+
+.prod-cat li ul li a {
+  border-bottom: none;
+}
+.prod-cat li ul li a:hover,
+.prod-cat li ul li a:focus,
+.prod-cat li ul li.active a,
+.prod-cat li a:hover,
+.prod-cat li a:focus,
+.prod-cat li a.active {
+  background: none;
+  color: #ff7261;
+}
+
+.pro-lab {
+  margin-right: 20px;
+  font-weight: normal;
+}
+
+.pro-sort {
+  padding-right: 20px;
+  float: left;
+}
+
+.pro-page-list {
+  margin: 5px 0 0 0;
+}
+
+.product-list img {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  -webkit-border-radius: 4px 4px 0 0;
+}
+
+.product-list .pro-img-box {
+  position: relative;
+}
+.adtocart {
+  background: #fc5959;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+  border: 3px solid #fff;
+  left: 45%;
+  bottom: -25px;
+  position: absolute;
+}
+
+.adtocart i {
+  color: #fff;
+  font-size: 25px;
+  line-height: 42px;
+}
+
+.pro-title {
+  color: #5a5a5a;
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.product-list .price {
+  color: #fc5959;
+  font-size: 15px;
+}
+
+.pro-img-details {
+  margin-left: -15px;
+  margin-top: 60px;
+}
+
+.pro-img-details img {
+  width: 100%;
+}
+
+.pro-d-title {
+  font-size: 40px;
+  margin-top: 0;
+}
+
+.product_meta {
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+.product_meta span {
+  display: block;
+  margin-bottom: 10px;
+}
+.product_meta a,
+.pro-price {
+  color: #fc5959;
+}
+.product_meta1 {
+  padding-top: 50px;
+  border-top: 1px solid #eee;
+}
+.product_meta1 span {
+  display: block;
+  margin-bottom: 10px;
+}
+.product_meta1 a,
+.pro-price {
+  color: #fc5959;
+}
+
+.pro-price,
+.amount-old {
+  font-size: 18px;
+  padding: 0 10px;
+}
+
+.amount-old {
+  text-decoration: line-through;
+}
+
+.quantity {
+  width: 120px;
+}
+
+.pro-img-list {
+  margin: 10px 0 0 -15px;
+  width: 100%;
+  display: inline-block;
+}
+
+.pro-img-list a {
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.pro-d-head {
+  font-size: 18px;
+  font-weight: 300;
+}
+.number-input input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.number-input input[type="number"]::-webkit-inner-spin-button,
+.number-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.number-input {
+  margin-bottom: 3rem;
+}
+.number-input button {
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+.number-input button:before,
+.number-input button:after {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  height: 2px;
+  transform: translate(-50%, -50%);
+}
+.number-input button.plus:after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.number-input input[type="number"] {
+  text-align: center;
+}
+.number-input.number-input {
+  border: 1px solid #ced4da;
+  width: 10rem;
+  border-radius: 0.25rem;
+}
+.number-input.number-input button {
+  width: 2.6rem;
+  height: 0.7rem;
+}
+.number-input.number-input button.minus {
+  padding-left: 10px;
+}
+.number-input.number-input button:before,
+.number-input.number-input button:after {
+  width: 0.7rem;
+  background-color: #495057;
+}
+.number-input.number-input input[type="number"] {
+  max-width: 4rem;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-width: 0 1px;
+  font-size: 1rem;
+  height: 2rem;
+  color: #495057;
+}
