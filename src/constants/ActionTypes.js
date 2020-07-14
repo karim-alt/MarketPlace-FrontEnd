@@ -10,6 +10,8 @@ export const WINDOW_WIDTH = "window-width";
 export const SWITCH_LANGUAGE = "switch-language";
 export const CHANGE_DIRECTION = "change-direction";
 
+export const INCREMENT = "increment";
+
 export const CHANGE_NAVIGATION_STYLE = "change-navigation-style";
 export const HORIZONTAL_NAVIGATION = "horizontal_navigation";
 export const VERTICAL_NAVIGATION = "vertical_navigation";

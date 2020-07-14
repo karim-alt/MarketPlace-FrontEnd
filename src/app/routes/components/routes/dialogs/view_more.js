@@ -14,7 +14,7 @@ class ViewMore extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
     };
   }
 
@@ -24,10 +24,10 @@ class ViewMore extends React.Component {
         let url = `http://localhost:5000/` + this.props.product.images[x];
         axios
           .get(url)
-          .then(response => {
+          .then((response) => {
             this.imgs.push(response.config.url);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log(error);
           });
       }
@@ -39,6 +39,7 @@ class ViewMore extends React.Component {
     this.setState({ open: false });
     this.imgs = [];
   };
+  average = (array) => array.reduce((a, b) => a + b) / array.length;
   render() {
     let images = this.imgs.map((image, index) => {
       return (
@@ -77,39 +78,56 @@ class ViewMore extends React.Component {
                           </a>
                         </h4>
                         <p>{this.props.product.description}</p>
-                        <div class="product_meta">
+                        <div class="product_meta1">
                           <span class="posted_in">
-                            <strong>Country : </strong>
+                            <strong>Countries : </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.country}
+                              {this.props.product.country.map((c, i) => {
+                                return c + ", ";
+                              })}
                             </a>
                           </span>
                           <span class="posted_in">
                             <strong>Price : </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.prix} Dh
+                              {this.props.product.prix + " Dh"}
+                              {this.props.product.quantity.slice(-2) === " q"
+                                ? "/q"
+                                : this.props.product.quantity.slice(-2) === "kg"
+                                ? "/kg"
+                                : "/t"}
                             </a>
                           </span>
                           <span class="posted_in">
                             <strong>Quantity : </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.quantity} Kg
+                              {this.props.product.quantity}
                             </a>
                           </span>
                         </div>
 
                         <div className="d-flex flex-row">
                           <span class="tagged_as">
-                            <strong>Reviews : </strong>
+                            <strong>Rating : </strong>
                           </span>
                           <StarRatingComponent
                             name=""
-                            value={this.props.product.rating}
+                            value={
+                              this.props.product.rating.length !== 0
+                                ? this.average(
+                                    this.props.product.rating
+                                  ).toFixed(1)
+                                : 0
+                            }
                             starCount={5}
                             editing={false}
                           />
                           <strong className="d-inline-block ml-2">
-                            {this.props.product.rating}
+                            {this.props.product.rating.length !== 0
+                              ? this.average(this.props.product.rating).toFixed(
+                                  1
+                                )
+                              : 0}
                           </strong>
                         </div>
                       </div>

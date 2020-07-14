@@ -1,19 +1,20 @@
 import {
   CHANGE_DIRECTION,
   CHANGE_NAVIGATION_STYLE,
-  MINI_DRAWER,
+  // MINI_DRAWER,
+  FIXED_DRAWER,
   HORIZONTAL_MENU_POSITION,
   INSIDE_THE_HEADER,
   SWITCH_LANGUAGE,
   TOGGLE_COLLAPSED_NAV,
   VERTICAL_NAVIGATION,
-  WINDOW_WIDTH
+  WINDOW_WIDTH,
 } from "constants/ActionTypes";
 
 const rltLocale = ["ar"];
 const initialSettings = {
   navCollapsed: false,
-  drawerType: MINI_DRAWER,
+  drawerType: FIXED_DRAWER,
   width: window.innerWidth,
   isDirectionRTL: false,
   navigationStyle: VERTICAL_NAVIGATION,
@@ -22,8 +23,8 @@ const initialSettings = {
     languageId: "english",
     locale: "en",
     name: "English",
-    icon: "us"
-  }
+    icon: "us",
+  },
 };
 
 const settings = (state = initialSettings, action) => {
@@ -31,40 +32,40 @@ const settings = (state = initialSettings, action) => {
     case "@@router/LOCATION_CHANGE":
       return {
         ...state,
-        navCollapsed: false
+        navCollapsed: false,
       };
     case TOGGLE_COLLAPSED_NAV:
       return {
         ...state,
-        navCollapsed: action.isNavCollapsed
+        navCollapsed: action.isNavCollapsed,
       };
     case WINDOW_WIDTH:
       return {
         ...state,
-        width: action.width
+        width: action.width,
       };
     case SWITCH_LANGUAGE:
       return {
         ...state,
         locale: action.payload,
-        isDirectionRTL: rltLocale.includes(action.payload.locale)
+        isDirectionRTL: rltLocale.includes(action.payload.locale),
       };
     case CHANGE_DIRECTION:
       return {
         ...state,
-        isDirectionRTL: !state.isDirectionRTL
+        isDirectionRTL: !state.isDirectionRTL,
       };
 
     case CHANGE_NAVIGATION_STYLE:
       return {
         ...state,
-        navigationStyle: action.payload
+        navigationStyle: action.payload,
       };
 
     case HORIZONTAL_MENU_POSITION:
       return {
         ...state,
-        horizontalNavPosition: action.payload
+        horizontalNavPosition: action.payload,
       };
 
     default:

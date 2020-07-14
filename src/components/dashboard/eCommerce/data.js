@@ -1,0 +1,28 @@
+export const data = [
+  { name: "Jan", Approved: 4000, OnHold: 2400 },
+  { name: "Feb", Approved: 3000, OnHold: 1398 },
+  { name: "Mar", Approved: 2000, OnHold: 9800 },
+  { name: "Apr", Approved: 2780, OnHold: 3908 },
+  { name: "May", Approved: 1890, OnHold: 4800 },
+  { name: "Jun", Approved: 2390, OnHold: 3800 },
+  { name: "Jul", Approved: 2390, OnHold: 3800 },
+  { name: "Aug", Approved: 3490, OnHold: 4300 },
+  { name: "Sep", Approved: 2780, OnHold: 3908 },
+  { name: "Oct", Approved: 3490, OnHold: 4300 },
+  { name: "Nov", Approved: 3490, OnHold: 4300 },
+  { name: "Dec", Approved: 3490, OnHold: 4300 },
+];
+export const salesStatisticData = [
+  { name: "Jan", uv: 9000 },
+  { name: "Feb", uv: 12000 },
+  { name: "Mar", uv: 7000 },
+  { name: "Apr", uv: 12000 },
+  { name: "May", uv: 14000 },
+  { name: "Jun", uv: 18500 },
+  { name: "Jul", uv: 14000 },
+  { name: "Aug", uv: 17000 },
+  { name: "Sep", uv: 15000 },
+  { name: "Oct", uv: 18000 },
+  { name: "Nov", uv: 19500 },
+  { name: "Dec", uv: 16000 },
+];

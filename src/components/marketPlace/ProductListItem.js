@@ -56,6 +56,9 @@ class ProductListItem extends React.Component {
         console.log(error);
       });
   };
+
+  average = array => array.reduce((a, b) => a + b) / array.length;
+
   render() {
     return (
       <div className="card product-item-vertical hoverable animation flipInX">
@@ -81,22 +84,50 @@ class ProductListItem extends React.Component {
               <div className="product-details">
                 <h3 className="card-title fw-regular">
                   {this.props.product.name}
-                  <small className="text-grey text-darken-2">
-                    {", " + this.props.product.quantity + " Kg"}
+                  <small
+                    className="text-grey text-darken-2"
+                    style={{ textTransform: "lowercase" }}
+                  >
+                    <strong style={{ color: "red" }}>
+                      {this.state.user.type === "Provider"
+                        ? ", " + this.props.product.bag_weight + " Kg"
+                        : ", " + this.props.product.quantity}
+                    </strong>
                   </small>
                 </h3>
                 <div className="d-flex ">
-                  <h3 className="card-title">{this.props.product.prix} Dh</h3>
+                  <h3
+                    className="card-title"
+                    style={{ textTransform: "lowercase" }}
+                  >
+                    <strong>
+                      {this.props.product.prix} Dh
+                      {this.state.user.type === "Farmer" &&
+                        (this.props.product.quantity.slice(-2) === " q"
+                          ? "/q"
+                          : this.props.product.quantity.slice(-2) === "kg"
+                          ? "/kg"
+                          : "/t")}
+                    </strong>
+                  </h3>
                 </div>
 
                 <div className="d-flex flex-row " style={{ height: 25 }}>
                   <StarRatingComponent
                     name=""
-                    value={this.props.product.rating}
+                    value={
+                      this.props.product.rating.length !== 0
+                        ? this.average(this.props.product.rating).toFixed(1)
+                        : 0
+                    }
                     starCount={5}
                     editing={false}
                   />
-                  <p className="ml-2">{this.props.product.rating}</p>
+                  <p className="ml-2">
+                    {this.props.product.rating.length !== 0
+                      ? this.average(this.props.product.rating).toFixed(1)
+                      : 0}
+                  </p>
                 </div>
                 <p>{this.props.product.description}</p>
               </div>

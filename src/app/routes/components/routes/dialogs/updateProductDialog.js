@@ -9,21 +9,25 @@ import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import axios from "axios";
 import SweetAlert from "react-bootstrap-sweetalert";
-
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
+import countryList from "react-select-country-list";
 import {
   NotificationContainer,
-  NotificationManager
+  NotificationManager,
 } from "react-notifications";
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-
+let count = 0;
 class UpdateProductDialog extends React.Component {
   fileObj = [];
   fileArray = [];
   constructor(props) {
     super(props);
+    this.options = countryList().getData();
     this.state = {
+      options: this.options,
       open: false,
       id: "",
       name: "",
@@ -31,11 +35,21 @@ class UpdateProductDialog extends React.Component {
       prix: "",
       quantity: "",
       description: "",
+      unit: "",
       success: false,
-      images: null
+      chipData: [],
+      images: null,
     };
     this.uploadMultipleFiles = this.uploadMultipleFiles.bind(this);
   }
+  onTagsChange = (event, values) => {
+    this.setState({
+      chipData: values,
+    });
+  };
+  handleChange = (e) => {
+    this.setState({ unit: e.target.value });
+  };
   uploadMultipleFiles(e) {
     // console.log("e.target.files : ", e.target.files);
     this.fileObj.push(e.target.files);
@@ -44,47 +58,60 @@ class UpdateProductDialog extends React.Component {
       this.fileArray.push(URL.createObjectURL(this.fileObj[0][i]));
     }
   }
-  changeHandler = value => {
-    console.log("value", value);
-    this.setState({ country: value });
+  handleRequestDelete = (data) => () => {
+    const chipData = [...this.state.chipData];
+    const chipToDelete = chipData.indexOf(data);
+    chipData.splice(chipToDelete, 1);
+    this.setState({ chipData });
   };
+
   handleClickOpen = () => {
     axios
       .get("http://localhost:5000/api/agricultural_products/" + this.props.id)
-      .then(response => {
+      .then((response) => {
+        for (let i = 0; i < response.data.country.length; i++) {
+          this.setState({
+            label: "",
+            chipData: this.state.chipData.concat({
+              key: i,
+              label: response.data.country[i],
+            }),
+          });
+        }
         this.setState({
           open: true,
           id: response.data._id,
           name: response.data.name,
           country: response.data.country,
           prix: response.data.prix,
-          quantity: response.data.quantity,
+          unit: response.data.quantity.slice(-2),
+          quantity: response.data.quantity.match(/\d/g).join(""),
           description: response.data.description,
-          images: response.data.images
+          images: response.data.images,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
   handleRequestClose = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, nam: "", chipData: [] });
     this.fileObj = [];
     this.fileArray = [];
   };
 
-  handleSave = e => {
+  handleSave = (e) => {
     e.preventDefault();
     if (
       this.state.name === "" ||
-      this.state.country === "" ||
+      this.state.chipData.length === 0 ||
       this.state.prix === "" ||
       this.state.quantity === ""
     ) {
       if (this.state.name === "")
         NotificationManager.error("Product name is required!");
-      if (this.state.country === "")
-        NotificationManager.error("Country field is required!");
+      if (this.state.chipData.length === 0)
+        NotificationManager.error("You must enter at least one country!");
       if (this.state.prix === "")
         NotificationManager.error("Price is required!");
       if (this.state.quantity === "")
@@ -95,20 +122,20 @@ class UpdateProductDialog extends React.Component {
       NotificationManager.error("Quantity must be positive!");
     else {
       const formData = new FormData();
-
       formData.append("name", this.state.name);
-      formData.append("country", this.state.country);
       formData.append("prix", this.state.prix);
-      formData.append("quantity", this.state.quantity);
+      formData.append("quantity", this.state.quantity + " " + this.state.unit);
       formData.append("description", this.state.description);
-
+      for (let x = 0; x < this.state.chipData.length; x++) {
+        formData.append("country", this.state.chipData[x].label);
+      }
       if (this.state.images !== null)
         for (var x = 0; x < this.state.images.length; x++) {
           formData.append("images", this.state.images[x]);
         }
 
       const config = {
-        headers: { "content-type": "multipart/form-data" }
+        headers: { "content-type": "multipart/form-data" },
       };
       axios
         .post(
@@ -117,20 +144,22 @@ class UpdateProductDialog extends React.Component {
           formData,
           config
         )
-        .then(res => console.log(res.data))
-        .catch(error => {
+        .then((res) => console.log(res.data))
+        .catch((error) => {
           console.log(error);
         });
 
       this.setState({
         name: "",
-        country: "",
+        country: null,
         prix: "",
         quantity: "",
         description: "",
         images: null,
+        unit: "kg",
         open: false,
-        success: true
+        success: true,
+        chipData: [],
       });
     }
     this.fileObj = [];
@@ -167,10 +196,10 @@ class UpdateProductDialog extends React.Component {
                 color="inherit"
                 style={{
                   flex: 1,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
-                Update product
+                Add new product
               </Typography>
               <Button color="inherit" onClick={this.handleSave}>
                 save
@@ -182,7 +211,7 @@ class UpdateProductDialog extends React.Component {
               className="col-lg-9 col-md-8 col-sm-7 col-12"
               style={{
                 display: "inline-block",
-                margin: "0 auto"
+                margin: "0 auto",
               }}
             >
               <form action="" className="contact-form jr-card">
@@ -190,7 +219,7 @@ class UpdateProductDialog extends React.Component {
                   <div
                     style={{
                       display: "inline-block",
-                      margin: "0 auto"
+                      margin: "0 auto",
                     }}
                     className="col-12"
                   >
@@ -199,7 +228,7 @@ class UpdateProductDialog extends React.Component {
                         <div
                           className="card-header"
                           style={{
-                            textAlign: "center"
+                            textAlign: "center",
                           }}
                         >
                           Product images
@@ -207,7 +236,7 @@ class UpdateProductDialog extends React.Component {
                         <div className="card-body">
                           <form>
                             <div className="form-group multi-preview">
-                              {(this.fileArray || []).map(url => (
+                              {(this.fileArray || []).map((url) => (
                                 <img src={url} alt="..." />
                               ))}
                             </div>
@@ -234,57 +263,81 @@ class UpdateProductDialog extends React.Component {
                         id="productName"
                         type="text"
                         placeholder="Product Name.."
-                        value={this.state.name}
-                        onChange={event =>
+                        defaultValue={this.state.name}
+                        onChange={(event) =>
                           this.setState({ name: event.target.value })
                         }
                       />
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+
+                  <div className="col-md-3 col-12">
                     <div className="form-group">
-                      <label htmlFor="country">Country</label>
-                      <input
-                        className="form-control form-control-lg"
-                        id="country"
-                        type="text"
-                        placeholder="Country.."
-                        defaultValue={this.state.country}
-                        onChange={event =>
-                          this.setState({ country: event.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6 col-12">
-                    <div className="form-group">
-                      <label htmlFor="Prix">Prix (Dh)</label>
-                      <input
-                        className="form-control form-control-lg"
-                        id="Prix"
-                        type="number"
-                        placeholder="Prix.."
-                        defaultValue={this.state.prix}
-                        onChange={event =>
-                          this.setState({ prix: event.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6 col-12">
-                    <div className="form-group">
-                      <label htmlFor="Quantity">Quantity (Kg)</label>
+                      <label htmlFor="Quantity">
+                        Quantity ({this.state.unit})
+                      </label>
                       <input
                         className="form-control form-control-lg"
                         id="Quantity"
                         type="Number"
                         placeholder="Quantity.."
                         defaultValue={this.state.quantity}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ quantity: event.target.value })
                         }
                       />
                     </div>
+                  </div>
+                  <div className="col-md-3 col-12">
+                    <div className="form-group">
+                      <label htmlFor="Unit">Unit </label>
+
+                      <select
+                        className="form-control form-control-lg"
+                        placeholder="Unit.."
+                        defaultValue={this.state.unit}
+                        onChange={this.handleChange}
+                      >
+                        <option value="kg">Kg</option>
+                        <option value=" q">Quintal(q)</option>
+                        <option value=" t">Tonne(t)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 col-12">
+                    <div className="form-group">
+                      <label htmlFor="Prix">Price (Dh/{this.state.unit})</label>
+                      <input
+                        className="form-control form-control-lg"
+                        id="Prix"
+                        type="Number"
+                        placeholder="Price.."
+                        defaultValue={this.state.prix}
+                        onChange={(event) =>
+                          this.setState({ prix: event.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6 col-12">
+                    <Autocomplete
+                      style={{ marginTop: "16px" }}
+                      multiple
+                      id="tags-outlined"
+                      options={this.state.options}
+                      getOptionLabel={(option) => option.label}
+                      value={this.state.chipData}
+                      onChange={this.onTagsChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Countries"
+                          placeholder="Add countries"
+                        />
+                      )}
+                    />
                   </div>
 
                   <div className="col-12">
@@ -295,7 +348,7 @@ class UpdateProductDialog extends React.Component {
                         rows="6"
                         placeholder="Product description.."
                         defaultValue={this.state.description}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ description: event.target.value })
                         }
                       />
@@ -310,7 +363,7 @@ class UpdateProductDialog extends React.Component {
           show={this.state.success}
           success
           title="Success"
-          onConfirm={event => this.setState({ success: false })}
+          onConfirm={(event) => this.setState({ success: false })}
         >
           Product updated successfully!
         </SweetAlert>

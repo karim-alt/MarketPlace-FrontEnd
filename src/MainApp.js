@@ -1,4 +1,5 @@
 import React from "react";
+import "react-notifications/lib/notifications.css";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import { Route, Switch } from "react-router-dom";

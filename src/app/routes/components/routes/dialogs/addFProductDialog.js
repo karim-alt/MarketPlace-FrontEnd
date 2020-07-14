@@ -10,17 +10,19 @@ import Slide from "@material-ui/core/Slide";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import SweetAlert from "react-bootstrap-sweetalert";
-import Select from "react-select";
+// import Select from "react-select";
 import countryList from "react-select-country-list";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
 import {
   NotificationContainer,
-  NotificationManager
+  NotificationManager,
 } from "react-notifications";
 import "./dialog.css";
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-
+let count = 0;
 class AddProductDialog extends React.Component {
   fileObj = [];
   fileArray = [];
@@ -36,20 +38,126 @@ class AddProductDialog extends React.Component {
       quantity: "",
       description: "",
       bag_weight: "",
-      N: "",
-      P: "",
-      K: "",
-
+      composition: null,
+      N: null,
+      P: null,
+      K: null,
       success: false,
       images: null,
-      user: jwt_decode(localStorage.jwtToken)
+      nam: "",
+      chipData: [{ label: "Morocco" }],
+      user: jwt_decode(localStorage.jwtToken),
+      other: false,
     };
     this.uploadMultipleFiles = this.uploadMultipleFiles.bind(this);
+    this.onTagsChange = this.onTagsChange.bind(this);
   }
-  changeHandler = value => {
-    console.log("value", value);
-    this.setState({ country: value });
+  onTagsChange = (event, values) => {
+    this.setState({
+      chipData: values,
+    });
   };
+  handleRequestDelete = (data) => () => {
+    const chipData = [...this.state.chipData];
+    const chipToDelete = chipData.indexOf(data);
+    chipData.splice(chipToDelete, 1);
+    this.setState({ chipData });
+  };
+  handleChange = (e) => {
+    switch (e.target.value) {
+      case "Other":
+        this.setState({
+          other: true,
+          composition: e.target.value,
+          N: null,
+          P: null,
+          K: null,
+        });
+        break;
+      case "Nitrate de potasse 13N-0P-46K":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 13,
+          P: 0,
+          K: 46,
+        });
+        break;
+      case "MAP 12N-61P-0K":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 12,
+          P: 61,
+          K: 0,
+        });
+        break;
+      case "NPK 15-15-15-10S":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 15,
+          P: 15,
+          K: 15,
+        });
+        break;
+      case "MAP 11N-52P-0K":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 11,
+          P: 52,
+          K: 0,
+        });
+        break;
+      case "DAP 18N-46P-0K":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 18,
+          P: 46,
+          K: 0,
+        });
+        break;
+      case "NPK 16-11-20":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 16,
+          P: 11,
+          K: 20,
+        });
+        break;
+      case "NPK 17-16-12":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 17,
+          P: 16,
+          K: 12,
+        });
+        break;
+      case "NPS 12N-46P-0K-7S":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 12,
+          P: 46,
+          K: 0,
+        });
+        break;
+      case "NPS 19N-38P-0K-7S":
+        this.setState({
+          other: false,
+          composition: e.target.value,
+          N: 19,
+          P: 38,
+          K: 0,
+        });
+        break;
+    }
+  };
+
   uploadMultipleFiles(e) {
     // console.log("e.target.files : ", e.target.files);
     this.fileObj.push(e.target.files);
@@ -63,23 +171,29 @@ class AddProductDialog extends React.Component {
     this.setState({ open: true });
   };
   handleRequestClose = () => {
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      chipData: [{ label: "Morocco" }],
+      N: null,
+      P: null,
+      K: null,
+    });
     this.fileObj = [];
     this.fileArray = [];
   };
-  handleSave = e => {
+  handleSave = (e) => {
     e.preventDefault();
 
     if (
       this.state.name === "" ||
-      this.state.country === null ||
+      this.state.chipData.length === 0 ||
       this.state.prix === "" ||
       this.state.quantity === ""
     ) {
       if (this.state.name === "")
         NotificationManager.error("Product name is required!");
-      if (this.state.country === null)
-        NotificationManager.error("Country field is required!");
+      if (this.state.chipData.length === 0)
+        NotificationManager.error("You must enter at least one country!");
       if (this.state.prix === "")
         NotificationManager.error("Price is required!");
       if (this.state.bag_weight === "")
@@ -90,32 +204,34 @@ class AddProductDialog extends React.Component {
       NotificationManager.error("Price must be positive!");
     else if (this.state.quantity <= 0)
       NotificationManager.error("Quantity must be positive!");
-    else if (this.state.N < 0 || this.state.P < 0 || this.state.K < 0)
-      NotificationManager.error("Percentage can't be negative!");
     else {
       const formData = new FormData();
-
       formData.append("name", this.state.name);
-      formData.append("country", this.state.country.label);
       formData.append("prix", this.state.prix);
       formData.append("quantity", this.state.quantity);
       formData.append("bag_weight", this.state.bag_weight);
       formData.append("description", this.state.description);
       formData.append("seller_id", this.state.user.id);
-
-      if (this.state.N !== "") formData.append("N", this.state.N);
-      else formData.append("N", 0);
-      if (this.state.P !== "") formData.append("P", this.state.P);
-      else formData.append("P", 0);
-      if (this.state.K !== "") formData.append("K", this.state.K);
-      else formData.append("K", 0);
-
+      // console.log("this.state.N", (this.state.bag_weight * this.state.K) / 100);
+      formData.append("N", (this.state.bag_weight * this.state.N) / 100);
+      formData.append("P", (this.state.bag_weight * this.state.P) / 100);
+      formData.append("K", (this.state.bag_weight * this.state.K) / 100);
+      if (this.state.other === false) {
+        formData.append("composition", this.state.composition);
+      } else
+        formData.append(
+          "composition",
+          "NPK " + this.state.N + "-" + this.state.N + "-" + this.state.K
+        );
+      for (let x = 0; x < this.state.chipData.length; x++) {
+        formData.append("country", this.state.chipData[x].label);
+      }
       if (this.state.images !== null)
         for (let x = 0; x < this.state.images.length; x++) {
           formData.append("images", this.state.images[x]);
         }
       const config = {
-        headers: { "content-type": "multipart/form-data" }
+        headers: { "content-type": "multipart/form-data" },
       };
       axios
         .post(
@@ -123,8 +239,8 @@ class AddProductDialog extends React.Component {
           formData,
           config
         )
-        .then(res => console.log(res.data))
-        .catch(error => {
+        .then((res) => console.log(res.data))
+        .catch((error) => {
           console.log(error);
         });
       this.setState({
@@ -133,13 +249,16 @@ class AddProductDialog extends React.Component {
         prix: "",
         quantity: "",
         description: "",
-        N: "",
-        P: "",
-        K: "",
-
+        bag_weight: "",
+        N: null,
+        P: null,
+        K: null,
         images: null,
         open: false,
-        success: true
+        success: true,
+        chipData: [{ label: "Morocco" }],
+        composition: null,
+        other: false,
       });
       this.fileObj = [];
       this.fileArray = [];
@@ -180,7 +299,7 @@ class AddProductDialog extends React.Component {
                 color="inherit"
                 style={{
                   flex: 1,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 Add new product
@@ -195,7 +314,7 @@ class AddProductDialog extends React.Component {
               className="col-lg-9 col-md-8 col-sm-7 col-12"
               style={{
                 display: "inline-block",
-                margin: "0 auto"
+                margin: "0 auto",
               }}
             >
               <form action="" className="contact-form jr-card">
@@ -203,7 +322,7 @@ class AddProductDialog extends React.Component {
                   <div
                     style={{
                       display: "inline-block",
-                      margin: "0 auto"
+                      margin: "0 auto",
                     }}
                     className="col-12"
                   >
@@ -212,7 +331,7 @@ class AddProductDialog extends React.Component {
                         <div
                           className="card-header"
                           style={{
-                            textAlign: "center"
+                            textAlign: "center",
                           }}
                         >
                           Product images
@@ -220,7 +339,7 @@ class AddProductDialog extends React.Component {
                         <div className="card-body">
                           <form>
                             <div className="form-group multi-preview">
-                              {(this.fileArray || []).map(url => (
+                              {(this.fileArray || []).map((url) => (
                                 <img src={url} alt="..." />
                               ))}
                             </div>
@@ -238,7 +357,6 @@ class AddProductDialog extends React.Component {
                       </div>
                     </div>
                   </div>
-
                   <div className=" col-md-6 col-12 ">
                     <div className="form-group">
                       <label form="productName">Product name</label>
@@ -248,23 +366,13 @@ class AddProductDialog extends React.Component {
                         type="text"
                         placeholder="Product Name.."
                         defaultValue={this.state.name}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ name: event.target.value })
                         }
                       />
                     </div>
                   </div>
                   <div className="col-md-6 col-12">
-                    <div className="form-group">
-                      <label htmlFor="country">Country</label>
-                      <Select
-                        options={this.state.options}
-                        value={this.state.country}
-                        onChange={this.changeHandler}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4 col-12">
                     <div className="form-group">
                       <label htmlFor="Prix">Bag weight (Kg)</label>
                       <input
@@ -273,13 +381,13 @@ class AddProductDialog extends React.Component {
                         type="Number"
                         placeholder="Bag weight.."
                         defaultValue={this.state.bag_weight}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ bag_weight: event.target.value })
                         }
                       />
                     </div>
                   </div>
-                  <div className="col-md-4 col-12">
+                  <div className="col-md-6 col-12">
                     <div className="form-group">
                       <label htmlFor="Quantity">Quantity(Bags) </label>
                       <input
@@ -288,13 +396,13 @@ class AddProductDialog extends React.Component {
                         type="Number"
                         placeholder="Quantity.."
                         defaultValue={this.state.quantity}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ quantity: event.target.value })
                         }
                       />
                     </div>
                   </div>
-                  <div className="col-md-4 col-12">
+                  <div className="col-md-6 col-12">
                     <div className="form-group">
                       <label htmlFor="Quantity">Price (Dh/Bag) </label>
                       <input
@@ -303,57 +411,116 @@ class AddProductDialog extends React.Component {
                         type="Number"
                         placeholder="Price.."
                         defaultValue={this.state.prix}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ prix: event.target.value })
                         }
                       />
                     </div>
                   </div>
-                  <div className="col-md-4 col-12">
+                  <div className="col-md-6 col-12">
+                    <Autocomplete
+                      style={{ marginTop: "16px" }}
+                      multiple
+                      id="tags-outlined"
+                      options={this.state.options}
+                      getOptionLabel={(option) => option.label}
+                      defaultValue={[this.state.options[150]]}
+                      onChange={this.onTagsChange}
+                      // onClick={this.handleClick}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Countries"
+                          placeholder="Add countries"
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="col-md-6 col-12">
                     <div className="form-group">
-                      <label htmlFor="N (%)">N (%) </label>
-                      <input
+                      <label htmlFor="Composition">Composition</label>
+                      <select
                         className="form-control form-control-lg"
-                        id="N"
-                        type="Number"
-                        placeholder="N.."
-                        defaultValue={this.state.N}
-                        onChange={event =>
-                          this.setState({ N: event.target.value })
-                        }
-                      />
+                        value={this.state.composition}
+                        onChange={this.handleChange}
+                      >
+                        <option value="" disabled selected>
+                          Select composition
+                        </option>
+                        <option value="Nitrate de potasse 13N-0P-46K">
+                          Nitrate de potasse 13N-0P-46K
+                        </option>
+                        <option value="MAP 12N-61P-0K">MAP 12N-61P-0K</option>
+                        <option value="NPK 15-15-15-10S">
+                          NPK 15-15-15-10S
+                        </option>
+                        <option value="MAP 11N-52P-0K">MAP 11N-52P-0K</option>
+                        <option value="DAP 18N-46P-0K">DAP 18N-46P-0K</option>
+                        <option value="NPK 16-11-20">NPK 16-11-20</option>
+                        <option value="NPK 17-16-12">NPK 17-16-12</option>
+                        <option value="NPS 12N-46P-0K-7S">
+                          NPS 12N-46P-0K-7S
+                        </option>
+                        <option value="NPS 19N-38P-0K-7S">
+                          NPS 19N-38P-0K-7S
+                        </option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
                   </div>
-                  <div className="col-md-4 col-12">
-                    <div className="form-group">
-                      <label htmlFor="P (%)">P (%) </label>
-                      <input
-                        className="form-control form-control-lg"
-                        id="P"
-                        type="Number"
-                        placeholder="P.."
-                        defaultValue={this.state.P}
-                        onChange={event =>
-                          this.setState({ P: event.target.value })
-                        }
-                      />
+
+                  {this.state.other && (
+                    <div className="col-md-4 col-12">
+                      <div className="form-group">
+                        <label htmlFor="N (%)">N (%) </label>
+                        <input
+                          className="form-control form-control-lg"
+                          id="N"
+                          type="Number"
+                          placeholder="N.."
+                          defaultValue={this.state.N}
+                          onChange={(event) =>
+                            this.setState({ N: event.target.value })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-4 col-12">
-                    <div className="form-group">
-                      <label htmlFor="k (%)">k (%) </label>
-                      <input
-                        className="form-control form-control-lg"
-                        id="K"
-                        type="Number"
-                        placeholder="K.."
-                        defaultValue={this.state.K}
-                        onChange={event =>
-                          this.setState({ K: event.target.value })
-                        }
-                      />
+                  )}
+                  {this.state.other && (
+                    <div className="col-md-4 col-12">
+                      <div className="form-group">
+                        <label htmlFor="P (%)">P (%) </label>
+                        <input
+                          className="form-control form-control-lg"
+                          id="P"
+                          type="Number"
+                          placeholder="P.."
+                          defaultValue={this.state.P}
+                          onChange={(event) =>
+                            this.setState({ P: event.target.value })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  {this.state.other && (
+                    <div className="col-md-4 col-12">
+                      <div className="form-group">
+                        <label htmlFor="k (%)">k (%) </label>
+                        <input
+                          className="form-control form-control-lg"
+                          id="K"
+                          type="Number"
+                          placeholder="K.."
+                          defaultValue={this.state.K}
+                          onChange={(event) =>
+                            this.setState({ K: event.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="col-12">
                     <div className="form-group">
@@ -363,7 +530,7 @@ class AddProductDialog extends React.Component {
                         rows="6"
                         placeholder="Product description.."
                         defaultValue={this.state.description}
-                        onChange={event =>
+                        onChange={(event) =>
                           this.setState({ description: event.target.value })
                         }
                       />
@@ -378,7 +545,7 @@ class AddProductDialog extends React.Component {
           show={this.state.success}
           success
           title="Success"
-          onConfirm={event => this.setState({ success: false })}
+          onConfirm={(event) => this.setState({ success: false })}
         >
           Product added successfully!
         </SweetAlert>

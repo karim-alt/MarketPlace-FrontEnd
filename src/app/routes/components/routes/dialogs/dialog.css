@@ -6,3 +6,16 @@
   max-width: 100px;
   padding: 5px;
 }
+.input-group {
+  top: 40px;
+  width: auto;
+}
+.unity-input .form-control {
+  border-right: 0 !important;
+}
+.unity-input .input-group-addon {
+  background: white !important;
+  border-left: none !important;
+  font-weight: bold;
+  color: #333;
+}

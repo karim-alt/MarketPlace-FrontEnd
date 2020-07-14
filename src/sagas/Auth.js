@@ -4,7 +4,7 @@ import {
   showAuthMessage,
   userSignInSuccess,
   userSignOutSuccess,
-  userSignUpSuccess
+  userSignUpSuccess,
 } from "actions/Auth";
 import setAuthToken from "../util/setAuthToken";
 import axios from "axios";
@@ -16,13 +16,14 @@ const createUserWithEmailPasswordRequest = async (
   password,
   phone,
   confirmPassword,
-  type
+  type,
+  country
 ) => {
   return new Promise((resolve, rejects) => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     };
     // Request body
     const body = JSON.stringify({
@@ -31,12 +32,13 @@ const createUserWithEmailPasswordRequest = async (
       password,
       phone,
       confirmPassword,
-      type
+      type,
+      country,
     });
     axios
       .post("http://localhost:5000/api/users/register", body, config)
-      .then(authUser => resolve(authUser.data))
-      .catch(error => rejects(error));
+      .then((authUser) => resolve(authUser.data))
+      .catch((error) => rejects(error));
   });
 };
 
@@ -44,8 +46,8 @@ const signInUserWithEmailPasswordRequest = async (email, password) => {
   return new Promise((resolve, rejects) => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     };
 
     // Request body
@@ -53,13 +55,21 @@ const signInUserWithEmailPasswordRequest = async (email, password) => {
 
     axios
       .post("http://localhost:5000/api/users/login", body, config)
-      .then(res => resolve(res.data))
-      .catch(error => rejects(error));
+      .then((res) => resolve(res.data))
+      .catch((error) => rejects(error));
   });
 };
 
 function* createUserWithEmailPassword({ payload }) {
-  const { fullName, email, password, phone, confirmPassword, type } = payload;
+  const {
+    fullName,
+    email,
+    password,
+    phone,
+    confirmPassword,
+    type,
+    country,
+  } = payload;
   try {
     const signUpUser = yield call(
       createUserWithEmailPasswordRequest,
@@ -68,7 +78,8 @@ function* createUserWithEmailPassword({ payload }) {
       password,
       phone,
       confirmPassword,
-      type
+      type,
+      country
     );
     if (signUpUser.status === "failure") {
       if (signUpUser.msg.fullName)

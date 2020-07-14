@@ -14,18 +14,24 @@ import SignUp from "./SignUp";
 import { setInitUrl } from "../actions/Auth";
 import RTL from "util/RTL";
 import asyncComponent from "util/asyncComponent";
-
+import io from "socket.io-client";
+import jwt_decode from "jwt-decode";
+// import img from "./background2.jpg";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 const RestrictedRoute = ({ component: Component, authUser, ...rest }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props) =>
       localStorage.jwtToken ? (
         <Component {...props} />
       ) : (
         <Redirect
           to={{
             pathname: "/signin",
-            state: { from: props.location }
+            state: { from: props.location },
           }}
         />
       )
@@ -41,6 +47,82 @@ class App extends Component {
     }
   }
 
+  componentDidMount() {
+    if (localStorage.jwtToken !== null) {
+      let server = "localhost:5000";
+      this.socket = io.connect(server);
+      this.socket.on("approvedNotif", (msg) => {
+        if (jwt_decode(localStorage.jwtToken).id === msg.Buyer_Id) {
+          // let counter = parseInt(parseInt(localStorage.counter) + 1);
+          // localStorage.setItem("counter", counter);
+          if (jwt_decode(localStorage.jwtToken).type === "Client") {
+            NotificationManager.info(
+              `Hi ` +
+                jwt_decode(localStorage.jwtToken).fullName +
+                ` 😇! Your order
+            ` +
+                msg.Qty +
+                ` of ` +
+                msg.productName +
+                `
+          , have been approved.`,
+              "Order accepted",
+              7000
+            );
+          }
+          if (jwt_decode(localStorage.jwtToken).type === "Farmer") {
+            NotificationManager.info(
+              `Hi ` +
+                jwt_decode(localStorage.jwtToken).fullName +
+                ` 😇! Your order
+            ` +
+                msg.Qty +
+                ` bag(s) of ` +
+                msg.productName +
+                `
+          , have been approved.`,
+              "Order accepted",
+              7000
+            );
+          }
+        }
+      });
+      this.socket.on("sendResponse", (msg) => {
+        if (jwt_decode(localStorage.jwtToken).id === msg.Seller_Id) {
+          // let counter = parseInt(parseInt(localStorage.counter) + 1);
+          // localStorage.setItem("counter", counter);
+          if (jwt_decode(localStorage.jwtToken).type === "Farmer") {
+            NotificationManager.info(
+              `Hi ` +
+                jwt_decode(localStorage.jwtToken).fullName +
+                ` 😇, I want to buy 
+              ` +
+                msg.Qty +
+                ` of ` +
+                msg.productName,
+
+              "New Order ",
+              7000
+            );
+          }
+          if (jwt_decode(localStorage.jwtToken).type === "Provider") {
+            NotificationManager.info(
+              `Hi ` +
+                jwt_decode(localStorage.jwtToken).fullName +
+                ` 😇, I want to buy 
+            ` +
+                msg.Qty +
+                `bag(s) of ` +
+                msg.productName,
+              "New Order ",
+              7000
+            );
+          }
+        }
+      });
+    }
+  }
+
   render() {
     const {
       match,
@@ -48,7 +130,7 @@ class App extends Component {
       locale,
       authUser,
       initURL,
-      isDirectionRTL
+      isDirectionRTL,
     } = this.props;
     if (location.pathname === "/") {
       if (localStorage.jwtToken === null) {
@@ -60,7 +142,6 @@ class App extends Component {
       }
     }
     const applyTheme = createMuiTheme(defaultTheme);
-
     if (isDirectionRTL) {
       applyTheme.direction = "rtl";
       document.body.classList.add("rtl");
@@ -78,7 +159,14 @@ class App extends Component {
             messages={currentAppLocale.messages}
           >
             <RTL>
-              <div className="app-main">
+              <div
+                className="app-main"
+                // style={{ backgroundImage: `url(${img})` }}
+                // style={{
+                //   background: `linear-gradient(217deg,#95f99a, rgba(255,0,0,0) 70.71%)
+                // `,
+                // }}
+              >
                 <Switch>
                   <RestrictedRoute
                     path={`${match.url}app`}
@@ -93,6 +181,9 @@ class App extends Component {
                     )}
                   />
                 </Switch>
+                <div>
+                  <NotificationContainer />
+                </div>
               </div>
             </RTL>
           </IntlProvider>

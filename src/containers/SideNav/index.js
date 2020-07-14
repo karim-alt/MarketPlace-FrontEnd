@@ -7,7 +7,7 @@ import UserInfo from "components/UserInfo";
 import {
   COLLAPSED_DRAWER,
   FIXED_DRAWER,
-  HORIZONTAL_NAVIGATION
+  HORIZONTAL_NAVIGATION,
 } from "constants/ActionTypes";
 import { toggleCollapsedNav, updateWindowWidth } from "actions/Setting";
 
@@ -18,7 +18,7 @@ class SideNav extends React.PureComponent {
   //     user: jwt_decode(localStorage.jwtToken)
   //   };
   // }
-  onToggleCollapsedNav = e => {
+  onToggleCollapsedNav = (e) => {
     const val = !this.props.navCollapsed;
     this.props.toggleCollapsedNav(val);
   };
@@ -56,7 +56,7 @@ class SideNav extends React.PureComponent {
           open={type.includes("temporary") ? navCollapsed : true}
           onClose={this.onToggleCollapsedNav}
           classes={{
-            paper: "side-nav"
+            paper: "side-nav",
           }}
         >
           <UserInfo />

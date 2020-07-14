@@ -9,7 +9,6 @@ import styled from "styled-components";
 import WeatherBannerTab from "./WeatherBannerTab";
 import MiniWeatherCard from "./MiniWeatherCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import SearchBox from "components/SearchBox";
 
 class WeatherWidget extends React.Component {
   renderEmpty() {
@@ -46,7 +45,7 @@ class WeatherWidget extends React.Component {
           }
         }
       });
-      this.state = { forecastIdx: 0, forecastOfDayList, search: null };
+      this.state = { forecastIdx: 0, forecastOfDayList };
     } else {
       this.state = {};
     }
@@ -78,28 +77,15 @@ class WeatherWidget extends React.Component {
       this.setState({ forecastIdx: 0, forecastOfDayList });
     }
   }
-  searchSpace = event => {
-    let keyword = event.target.value;
-    this.setState({ search: keyword });
-  };
+
   render() {
     const { config, forecast } = this.props;
-    const { search } = this.state;
     if (!forecast) {
       return this.renderEmpty();
     }
     const forecastList = this.state.forecastOfDayList;
     return (
-      <ContentContainer style={{ backgroundColor: "white" }}>
-        <center>
-          <div className="col-md-3">
-            <SearchBox
-              placeholder="Search by city name..."
-              onChange={e => this.searchSpace(e)}
-              value={search}
-            />
-          </div>
-        </center>
+      <div style={{ backgroundColor: "white" }}>
         <WeatherBannerTab
           className=""
           location={config.location}
@@ -144,7 +130,7 @@ class WeatherWidget extends React.Component {
             locale={config.locale}
           />
         </Next5Container>
-      </ContentContainer>
+      </div>
     );
   }
 }
@@ -175,14 +161,6 @@ WeatherWidget.propTypes = {
     locale: PropTypes.string
   }).isRequired
 };
-
-const ContentContainer = styled.div`
-  display: block;
-  margin: 10px 5px;
-  text-align: left;
-  box-shadow: 3px 3px 3px #aaaaaa;
-  padding: 1rem 1rem;
-`;
 
 const Next5Container = styled.div`
   display: flex;

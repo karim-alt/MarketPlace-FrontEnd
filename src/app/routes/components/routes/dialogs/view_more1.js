@@ -17,21 +17,21 @@ class ViewMore extends React.Component {
       open: false,
       value: 3,
       qteValue: 1,
-      price: this.props.product.prix
+      price: this.props.product.prix,
     };
   }
   decrease = () => {
     if (this.state.qteValue > 1)
       this.setState({
         qteValue: this.state.qteValue - 1,
-        price: this.state.price - this.props.product.prix
+        price: this.state.price - this.props.product.prix,
       });
   };
 
   increase = () => {
     this.setState({
       qteValue: this.state.qteValue + 1,
-      price: this.state.price + this.props.product.prix
+      price: this.state.price + this.props.product.prix,
     });
   };
   handleClickOpen = () => {
@@ -40,10 +40,10 @@ class ViewMore extends React.Component {
         let url = `http://localhost:5000/` + this.props.product.images[x];
         axios
           .get(url)
-          .then(response => {
+          .then((response) => {
             this.imgs.push(response.config.url);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log(error);
           });
       }
@@ -55,7 +55,7 @@ class ViewMore extends React.Component {
     this.setState({ open: false, qteValue: 1 });
     this.imgs = [];
   };
-
+  average = (array) => array.reduce((a, b) => a + b) / array.length;
   render() {
     let images = this.imgs.map((image, index) => {
       return (
@@ -98,9 +98,11 @@ class ViewMore extends React.Component {
 
                         <div class="product_meta1">
                           <span class="posted_in">
-                            <strong>Country : </strong>
+                            <strong>Countries : </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.country}
+                              {this.props.product.country.map((c, i) => {
+                                return c + ", ";
+                              })}
                             </a>
                           </span>
 
@@ -112,21 +114,27 @@ class ViewMore extends React.Component {
                           </span>
                           <span class="posted_in">
                             <strong>Composition : </strong>
-                            <a rel="tag" href="javascript:void(0)">
-                              {"N : " +
-                                this.props.product.N +
-                                "% , P : " +
-                                this.props.product.P +
-                                "% ,  K : " +
-                                this.props.product.K +
-                                "%"}
-                            </a>
+                            {this.props.product.composition !== null ? (
+                              <a rel="tag" href="javascript:void(0)">
+                                {this.props.product.composition}
+                              </a>
+                            ) : (
+                              <a rel="tag" href="javascript:void(0)">
+                                {"N : " +
+                                  this.props.product.N +
+                                  "% , P : " +
+                                  this.props.product.P +
+                                  "% ,  K : " +
+                                  this.props.product.K +
+                                  "%"}
+                              </a>
+                            )}
                           </span>
                           <span class="posted_in">
                             <strong>Quantity :</strong>
 
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.quantity}
+                              {this.props.product.quantity + " kg"}
                             </a>
                           </span>
                           <span class="posted_in">
@@ -139,16 +147,26 @@ class ViewMore extends React.Component {
                         </div>
                         <div className="d-flex flex-row">
                           <span class="tagged_as">
-                            <strong>Reviews : </strong>
+                            <strong>Rating : </strong>
                           </span>
                           <StarRatingComponent
                             name=""
-                            value={this.props.product.rating}
+                            value={
+                              this.props.product.rating.length !== 0
+                                ? this.average(
+                                    this.props.product.rating
+                                  ).toFixed(1)
+                                : 0
+                            }
                             starCount={5}
                             editing={false}
                           />
                           <strong className="d-inline-block ml-2">
-                            {this.props.product.rating}
+                            {this.props.product.rating.length !== 0
+                              ? this.average(this.props.product.rating).toFixed(
+                                  1
+                                )
+                              : 0}
                           </strong>
                         </div>
                       </div>

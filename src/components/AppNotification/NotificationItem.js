@@ -5,7 +5,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import jwt_decode from "jwt-decode";
 
@@ -18,7 +17,7 @@ class NotificationItem extends React.Component {
     super(props);
     this.state = {
       open: false,
-      user: jwt_decode(localStorage.jwtToken)
+      user: jwt_decode(localStorage.jwtToken),
     };
   }
 
@@ -31,7 +30,7 @@ class NotificationItem extends React.Component {
   render() {
     const { order } = this.props;
     return (
-      <li className="media">
+      <li className="media" style={{ margin: 0, padding: 8 }}>
         <Button
           color="primary"
           className="jr-btn jr-btn-sm "
@@ -45,22 +44,21 @@ class NotificationItem extends React.Component {
           /> */}
 
           <div className="media-body align-self-center">
-            <strong>Order</strong>
-            <p className="sub-heading mb-0" style={{ margin: "5px" }}>
+            <p className="sub-heading mb-0">
               Hello, I want to buy{" "}
               <strong>
                 "{order.Qty}
-                {this.state.user.type === "Farmer" ? " Kg" : " bag(s)"} of{" "}
+                {this.state.user.type === "Farmer" ? null : " bag(s)"} of{" "}
                 {order.productName}"
               </strong>
-              , Please contact me if you still have this quantity, thank you :)
+              , Please contact me if you still have this quantity, thank you 😇.
             </p>
             <span className="jr-btn jr-btn-xs mb-0">
               <i className="zmdi zmdi-comment-text text-grey zmdi-hc-fw" />
             </span>
             <span className="meta-date" style={{ margin: "5px" }}>
               <small>
-                {order.Date.slice(0, 10)} at {order.Date.slice(11, 16)}
+                {order.date.slice(0, 10)} at {order.date.slice(11, 16)}
               </small>
             </span>
           </div>
@@ -77,46 +75,96 @@ class NotificationItem extends React.Component {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
           >
-            <center>
-              <DialogTitle id="alert-dialog-slide-title">
-                {"Order and customer informations"}
-              </DialogTitle>
-            </center>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                <center>
-                  <div className="row">
-                    <div className="col-6" style={{ marginTop: "10px" }}>
-                      <strong>Product name : </strong>
-                      {order.productName}
-                    </div>
-                    <div className="col-6" style={{ marginTop: "10px" }}>
-                      <strong>Customer Name : </strong>
-                      {order.buyerName}
-                    </div>
+                <table
+                  width="100%"
+                  style={{
+                    margin: "auto",
+                    padding: "10px",
+                    backgroundColor: "#F3F3F3",
+                  }}
+                >
+                  <tr>
+                    <td>
+                      <table
+                        cellpadding="0"
+                        cellspacing="0"
+                        style={{
+                          textAlign: "center",
+                          width: "100%",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <tr>
+                          <td
+                            style={{
+                              backgroundColor: "#57B45A",
+                              height: "100px",
+                              fontSize: "50px",
+                              color: "#fff",
+                            }}
+                          >
+                            <img
+                              src="https://img.icons8.com/dusk/64/000000/return-purchase.png"
+                              alt="icone"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <h1 style={{ paddingTop: "20px" }}>New Order</h1>
+                          </td>
+                        </tr>
 
-                    <div className="col-6" style={{ marginTop: "10px" }}>
-                      <strong>Ordered Quantity : </strong>
-                      {order.Qty}
-                      {this.state.user.type === "Farmer" ? " Kg" : " bag(s)"}
-                    </div>
-                    <div className="col-6" style={{ marginTop: "10px" }}>
-                      <strong>Phone Number : </strong>
-                      {order.buyerPhone}
-                    </div>
-                    <div className="col-12" style={{ marginTop: "15px" }}>
-                      <strong>Price : </strong>
-                      {order.price * order.Qty}
-                      {" dh"}
-                    </div>
-                  </div>
-                </center>
+                        <tr>
+                          <td>
+                            <center>
+                              <p style={{ padding: "0px 100px" }}>
+                                <p>
+                                  <strong>Product Name :</strong>{" "}
+                                  {order.productName}
+                                </p>
+                                <p>
+                                  <strong>Ordred quantity :</strong>
+                                  {order.Qty}
+                                  {this.state.user.type === "Farmer"
+                                    ? null
+                                    : " bag(s)"}
+                                </p>
+                                <p>
+                                  <strong>Price :</strong>{" "}
+                                  {this.state.user.type === "Farmer"
+                                    ? order.price *
+                                      order.Qty.slice(0, order.Qty.length - 2)
+                                    : order.price * order.Qty}
+                                  {" dh"}
+                                </p>
+                                <p>
+                                  {" "}
+                                  <strong>Costumer Name :</strong>{" "}
+                                  {order.buyerName}
+                                </p>
+                                <p style={{ paddingBottom: "20px" }}>
+                                  <strong>Phone number :</strong>{" "}
+                                  {order.buyerPhone}
+                                </p>
+                              </p>
+                            </center>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
-                OK
-              </Button>
+              <center>
+                <Button onClick={this.handleClose} color="primary">
+                  OK
+                </Button>
+              </center>
             </DialogActions>
           </Dialog>
         </div>

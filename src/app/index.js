@@ -9,7 +9,7 @@ import {
   BELOW_THE_HEADER,
   COLLAPSED_DRAWER,
   FIXED_DRAWER,
-  HORIZONTAL_NAVIGATION
+  HORIZONTAL_NAVIGATION,
 } from "constants/ActionTypes";
 import { isIOS, isMobile } from "react-device-detect";
 import asyncComponent from "../util/asyncComponent";
@@ -21,7 +21,7 @@ class App extends React.Component {
       match,
       drawerType,
       navigationStyle,
-      horizontalNavPosition
+      horizontalNavPosition,
     } = this.props;
     const drawerStyle = drawerType.includes(FIXED_DRAWER)
       ? "fixed-drawer"

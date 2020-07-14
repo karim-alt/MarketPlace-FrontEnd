@@ -12,15 +12,16 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import ParticleComponent from "./ParticleComponent";
+// import ParticleComponent from "./ParticleComponent";
+import background from "./background2.jpg";
 import PropTypes from "prop-types";
-import axios from "axios";
-import SweetAlert from "react-bootstrap-sweetalert";
+// import axios from "axios";
+// import SweetAlert from "react-bootstrap-sweetalert";
 import { NavLink } from "react-router-dom";
 import PhoneInput from "material-ui-phone-number";
 import {
   NotificationContainer,
-  NotificationManager
+  NotificationManager,
 } from "react-notifications";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Link } from "react-router-dom";
@@ -32,19 +33,20 @@ class SignUp extends React.Component {
     super();
     this.state = {
       fullName: "",
-      email: "",
+      email: null,
       password: "",
       confirmPassword: "",
       phone: "",
+      country: "",
       type: "",
       code: "",
-      open: false
+      open: false,
     };
   }
 
   static propTypes = {
     showAuthLoader: PropTypes.func.isRequired,
-    userSignUp: PropTypes.func.isRequired
+    userSignUp: PropTypes.func.isRequired,
   };
 
   componentDidUpdate() {
@@ -54,19 +56,19 @@ class SignUp extends React.Component {
         this.props.hideMessage();
       }, 3000);
     }
-    if (this.props.user == true) {
+    if (this.props.user === true) {
       // console.log("update :" + this.props.authUser._id);
       this.props.history.push("/signin");
     }
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     let mailRegex = new RegExp(
       /^(?!.{254})(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
     if (
       this.state.fullName === "" ||
-      this.state.email === "" ||
+      this.state.email === null ||
       this.state.password.length <= 6 ||
       this.state.confirmPassword === "" ||
       this.state.phone === "" ||
@@ -84,12 +86,18 @@ class SignUp extends React.Component {
       password: this.state.password,
       confirmPassword: this.state.confirmPassword,
       phone: this.state.phone,
-      type: this.state.type
+      country: this.state.country,
+      type: this.state.type,
     };
     this.props.userSignUp(data);
   };
-  handleChange = name => e => {
+  handleChange = (name) => (e) => {
     this.setState({ [name]: e.target.value });
+  };
+  handleChangePhone = (value, country) => {
+    this.setState({ phone: value, country: country.name });
+    console.log("value", value);
+    console.log("country", country.name);
   };
   // handleRegister = event => {
   //   event.preventDefault();
@@ -127,29 +135,31 @@ class SignUp extends React.Component {
       password,
       phone,
       confirmPassword,
-      type
+      type,
     } = this.state;
 
     const { loader } = this.props;
     return (
       <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "auto"
-        }}
+        //   style={{
+        //     position: "absolute",
+        //     top: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     height: "auto",
+        //   }}
+        className="bg-image"
       >
-        <ParticleComponent />
+        {/* // <ParticleComponent /> */}
         <div
           className="app-login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3"
           style={{
+            // backgroundImage: `url(${background})`,
             position: "absolute",
             top: 0,
             left: 350,
             width: "auto",
-            height: "100%"
+            height: "100%",
           }}
         >
           <div className="app-login-main-content" style={{ opacity: 0.9 }}>
@@ -168,7 +178,9 @@ class SignUp extends React.Component {
 
             <div className="app-login-content">
               <div className="app-login-header">
-                <h1>Sign Up</h1>
+                <h1>
+                  <IntlMessages id="appModule.signUp" />
+                </h1>
               </div>
 
               <div className="mb-">
@@ -181,8 +193,8 @@ class SignUp extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                   <TextField
                     type="text"
-                    label="Full Name*"
-                    onChange={event =>
+                    label={<IntlMessages id="appModule.name" />}
+                    onChange={(event) =>
                       this.setState({ fullName: event.target.value })
                     }
                     fullWidth
@@ -194,12 +206,13 @@ class SignUp extends React.Component {
                   <PhoneInput
                     defaultCountry="ma"
                     value={phone}
-                    onChange={phone => this.setState({ phone })}
+                    onChange={this.handleChangePhone}
                     style={{ width: "100%", marginTop: "10px" }}
+                    // onClick={this.onClick}
                   />
                   <TextField
                     type="email"
-                    onChange={event =>
+                    onChange={(event) =>
                       this.setState({ email: event.target.value })
                     }
                     label="Email"
@@ -212,7 +225,7 @@ class SignUp extends React.Component {
                   />
                   <TextField
                     type="password"
-                    onChange={event =>
+                    onChange={(event) =>
                       this.setState({ password: event.target.value })
                     }
                     label="Password*"
@@ -224,7 +237,7 @@ class SignUp extends React.Component {
                   />
                   <TextField
                     type="password"
-                    onChange={event =>
+                    onChange={(event) =>
                       this.setState({ confirmPassword: event.target.value })
                     }
                     label="Confirm password*"
@@ -242,9 +255,7 @@ class SignUp extends React.Component {
                         onChange={this.handleChange("type")}
                         input={<Input id="type" />}
                       >
-                        <MenuItem value="Farmer">
-                          <em>Farmer</em>
-                        </MenuItem>
+                        <MenuItem value="Farmer">Farmer</MenuItem>
                         <MenuItem value="Provider">Provider</MenuItem>
                         <MenuItem value="Client">Client</MenuItem>
                       </Select>
@@ -262,7 +273,7 @@ class SignUp extends React.Component {
                       </Button>
                       <Dialog
                         open={this.state.open}
-                        onClose={event => this.setState({ open: false })}
+                        onClose={(event) => this.setState({ open: false })}
                         value={this.state.open}
                         aria-labelledby="form-dialog-title"
                       >
@@ -275,7 +286,7 @@ class SignUp extends React.Component {
                           </DialogContentText>
                           <TextField
                             autoFocus
-                            onChange={event =>
+                            onChange={(event) =>
                               this.setState({ code: event.target.value })
                             }
                             margin="dense"
@@ -290,7 +301,7 @@ class SignUp extends React.Component {
                         </DialogContent>
                         <DialogActions>
                           <Button
-                            onClick={event => this.setState({ open: false })}
+                            onClick={(event) => this.setState({ open: false })}
                             value={this.state.open}
                             color="primary"
                           >
@@ -301,7 +312,7 @@ class SignUp extends React.Component {
                             value={this.state.open}
                             color="primary"
                           >
-                            Register
+                            <IntlMessages id="appModule.regsiter" />
                           </Button>
                         </DialogActions>
                       </Dialog>
@@ -335,5 +346,5 @@ const mapStateToProps = ({ auth }) => {
 export default connect(mapStateToProps, {
   userSignUp,
   hideMessage,
-  showAuthLoader
+  showAuthLoader,
 })(SignUp);

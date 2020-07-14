@@ -8,7 +8,7 @@ class SidenavContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: jwt_decode(localStorage.jwtToken)
+      user: jwt_decode(localStorage.jwtToken),
     };
   }
   componentDidMount() {
@@ -18,7 +18,7 @@ class SidenavContent extends Component {
 
     const menuLi = document.getElementsByClassName("menu");
     for (let i = 0; i < menuLi.length; i++) {
-      menuLi[i].onclick = function(event) {
+      menuLi[i].onclick = function (event) {
         for (let j = 0; j < menuLi.length; j++) {
           const parentLi = that.closest(this, "li");
           if (
@@ -69,8 +69,8 @@ class SidenavContent extends Component {
         "webkitMatchesSelector",
         "mozMatchesSelector",
         "msMatchesSelector",
-        "oMatchesSelector"
-      ].some(function(fn) {
+        "oMatchesSelector",
+      ].some(function (fn) {
         if (typeof document.body[fn] == "function") {
           matchesFn = fn;
           return true;
@@ -115,8 +115,7 @@ class SidenavContent extends Component {
                 <NavLink to="/app/marketPlace">
                   <i className="zmdi zmdi-shopping-cart zmdi-hc-fw" />
                   <span className="nav-text text-transform-none">
-                    MarketPlace
-                    {/* <IntlMessages id="sidebar.eCommerce" /> */}
+                    <IntlMessages id="sidebar.marketPlace" />
                   </span>
                 </NavLink>
               </li>
@@ -124,8 +123,7 @@ class SidenavContent extends Component {
                 <NavLink to="/app/myOrders">
                   <i className="zmdi  zmdi-case-check zmdi-hc-fw" />
                   <span className="nav-text text-transform-none">
-                    My card
-                    {/* <IntlMessages id="sidebar.eCommerce" /> */}
+                    <IntlMessages id="sidebar.cart" />
                   </span>
                 </NavLink>
               </li>
@@ -133,48 +131,47 @@ class SidenavContent extends Component {
           ) : (
             <ul className="nav-menu">
               <li className="menu no-arrow">
-                <NavLink to="/app/map">
-                  <i className="zmdi zmdi-google-maps zmdi-hc-fw" />
-                  <span className="nav-text">Map analysis</span>
-                </NavLink>
-              </li>
-              <li className="menu no-arrow">
                 <NavLink to="/app/marketPlace">
                   <i className="zmdi zmdi-shopping-cart zmdi-hc-fw" />
                   <span className="nav-text text-transform-none">
-                    MarketPlace
-                    {/* <IntlMessages id="sidebar.eCommerce" /> */}
+                    <IntlMessages id="sidebar.marketPlace" />
                   </span>
                 </NavLink>
               </li>
-
               <li className="menu no-arrow">
                 <NavLink to="/app/orders">
                   <i className="zmdi zmdi-view-web zmdi-hc-fw" />
                   <span className="nav-text text-transform-none">
-                    Orders
-                    {/* <IntlMessages id="sidebar.eCommerce" /> */}
+                    <IntlMessages id="sidebar.orders" />
                   </span>
                 </NavLink>
               </li>
 
               {this.state.user.type === "Farmer" ? (
-                <li className="menu no-arrow">
-                  <NavLink to="/app/myOrders">
-                    <i className="zmdi  zmdi-case-check zmdi-hc-fw" />
-                    <span className="nav-text text-transform-none">
-                      My Card
-                      {/* <IntlMessages id="sidebar.eCommerce" /> */}
-                    </span>
-                  </NavLink>
-                </li>
+                <ul className="nav-menu">
+                  <li className="menu no-arrow">
+                    <NavLink to="/app/myOrders">
+                      <i className="zmdi  zmdi-case-check zmdi-hc-fw" />
+                      <span className="nav-text text-transform-none">
+                        <IntlMessages id="sidebar.cart" />
+                      </span>
+                    </NavLink>
+                  </li>
+                  <li className="menu no-arrow">
+                    <NavLink to="/app/map">
+                      <i className="zmdi zmdi-google-maps zmdi-hc-fw" />
+                      <span className="nav-text">
+                        <IntlMessages id="sidebar.mapp" />
+                      </span>
+                    </NavLink>
+                  </li>
+                </ul>
               ) : null}
               <li className="menu no-arrow">
                 <NavLink to="/app/myStore">
                   <i className="zmdi zmdi-storage zmdi-hc-fw" />
                   <span className="nav-text text-transform-none">
-                    My store
-                    {/* <IntlMessages id="sidebar.eCommerce" /> */}
+                    <IntlMessages id="sidebar.store" />
                   </span>
                 </NavLink>
               </li>

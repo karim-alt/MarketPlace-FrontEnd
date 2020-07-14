@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import styled from "styled-components";
 import iconCodeMapping from "../WeatherIcon";
-
+import IntlMessages from "util/IntlMessages";
 class WeatherBanner extends React.Component {
   constructor(props) {
     super(props);
@@ -20,10 +20,9 @@ class WeatherBanner extends React.Component {
     const locale = this.locale;
     return (
       <div>
-        <h5>{`${moment
-          .unix(data.dt)
-          .locale(locale)
-          .format("dddd h:mm a")}, ${data.desc}`}</h5>
+        <h5>{`${moment.unix(data.dt).locale(locale).format("dddd h:mm a")}, ${
+          data.desc
+        }`}</h5>
         <BannerContainer>
           <BannerIcon src={iconCodeMapping[data.icon]} />
           <Temperature>{Math.round(data.temp * 10) / 10}</Temperature>
@@ -31,13 +30,16 @@ class WeatherBanner extends React.Component {
           <div style={{ flex: "1" }} />
           <DetailContainer>
             <InfoText>
-              Clouds: <b>{data.clouds}%</b>
+              <IntlMessages id="appModule.clouds" />
+              <b>{data.clouds}%</b>
             </InfoText>
             <InfoText>
-              Humidity: <b>{data.humidity}%</b>
+              <IntlMessages id="appModule.humidity" />
+              <b>{data.humidity}%</b>
             </InfoText>
             <InfoText>
-              Wind:{" "}
+              <IntlMessages id="appModule.wind" />
+
               <b>
                 {data.wind}
                 {unit === "metric" ? "m/s" : "mph"}
@@ -52,7 +54,7 @@ class WeatherBanner extends React.Component {
 
 WeatherBanner.defaultProps = {
   unit: "metric",
-  locale: "en-us"
+  locale: "en-us",
 };
 
 WeatherBanner.propTypes = {
@@ -65,10 +67,10 @@ WeatherBanner.propTypes = {
     icon: PropTypes.string.isRequired,
     desc: PropTypes.string.isRequired,
     clouds: PropTypes.number.isRequired,
-    wind: PropTypes.number.isRequired
+    wind: PropTypes.number.isRequired,
   }).isRequired,
   unit: PropTypes.string,
-  locale: PropTypes.string
+  locale: PropTypes.string,
 };
 
 export default WeatherBanner;

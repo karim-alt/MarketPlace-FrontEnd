@@ -6,7 +6,7 @@ import {
   SHOW_MESSAGE,
   SIGNIN_USER_SUCCESS,
   SIGNOUT_USER_SUCCESS,
-  SIGNUP_USER_SUCCESS
+  SIGNUP_USER_SUCCESS,
 } from "constants/ActionTypes";
 
 const INIT_STATE = {
@@ -14,7 +14,7 @@ const INIT_STATE = {
   alertMessage: "",
   showMessage: false,
   initURL: "",
-  authUser: localStorage.getItem("jwtToken")
+  authUser: localStorage.getItem("jwtToken"),
 };
 
 export default (state = INIT_STATE, action) => {
@@ -23,7 +23,7 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         loader: false,
-        user: true
+        user: true,
       };
     }
 
@@ -31,14 +31,14 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         loader: false,
-        authUser: action.payload
+        authUser: action.payload,
       };
     }
 
     case INIT_URL: {
       return {
         ...state,
-        initURL: action.payload
+        initURL: action.payload,
       };
     }
     case SIGNOUT_USER_SUCCESS: {
@@ -46,7 +46,7 @@ export default (state = INIT_STATE, action) => {
         ...state,
         authUser: null,
         initURL: "/app/dashboard/default",
-        loader: false
+        loader: false,
       };
     }
 
@@ -55,7 +55,7 @@ export default (state = INIT_STATE, action) => {
         ...state,
         alertMessage: action.payload,
         showMessage: true,
-        loader: false
+        loader: false,
       };
     }
     case HIDE_MESSAGE: {
@@ -63,20 +63,20 @@ export default (state = INIT_STATE, action) => {
         ...state,
         alertMessage: "",
         showMessage: false,
-        loader: false
+        loader: false,
       };
     }
 
     case ON_SHOW_LOADER: {
       return {
         ...state,
-        loader: true
+        loader: true,
       };
     }
     case ON_HIDE_LOADER: {
       return {
         ...state,
-        loader: false
+        loader: false,
       };
     }
     default:

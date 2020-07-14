@@ -13,6 +13,11 @@ import Slide from "@material-ui/core/Slide";
 import Carousel from "react-bootstrap/Carousel";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import io from "socket.io-client";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 class ViewMore extends React.Component {
   imgs = [];
   sellerInfo = null;
@@ -20,26 +25,32 @@ class ViewMore extends React.Component {
     super(props);
     this.state = {
       open: false,
-      value: 3,
+      value: 0,
       qteValue: 1,
       success: false,
       user: jwt_decode(localStorage.jwtToken),
-      price: this.props.product.prix
+      price: this.props.product.prix,
     };
   }
-
+  handleChange = (event) => {
+    if (event.target.value !== "" && event.target.value >= 1) {
+      this.setState({
+        qteValue: event.target.value,
+      });
+    }
+  };
   decrease = () => {
     if (this.state.qteValue > 1)
       this.setState({
         qteValue: this.state.qteValue - 1,
-        price: this.state.price - this.props.product.prix
+        price: this.state.price - this.props.product.prix,
       });
   };
 
   increase = () => {
     this.setState({
       qteValue: this.state.qteValue + 1,
-      price: this.state.price + this.props.product.prix
+      price: this.state.price + this.props.product.prix,
     });
   };
   handleClickOpen = () => {
@@ -48,20 +59,20 @@ class ViewMore extends React.Component {
         let url = `http://localhost:5000/` + this.props.product.images[x];
         axios
           .get(url)
-          .then(response => {
+          .then((response) => {
             this.imgs.push(response.config.url);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log(error);
           });
       }
     }
     axios
       .get("http://localhost:5000/api/users/" + this.props.product.seller_id)
-      .then(response => {
+      .then((response) => {
         this.sellerInfo = response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
 
@@ -69,40 +80,94 @@ class ViewMore extends React.Component {
   };
 
   handleRequestClose = () => {
-    this.setState({ open: false, qteValue: 1, price: this.props.product.prix });
+    this.setState({
+      open: false,
+      qteValue: 1,
+      price: this.props.product.prix,
+      value: 0,
+    });
     this.imgs = [];
   };
-  sendOrder = e => {
-    e.preventDefault();
+
+  handlechangeRating = (event, newValue) => {
+    this.setState({ value: newValue });
     const config = {
-      headers: { "content-type": "application/json" }
+      headers: { "content-type": "application/json" },
     };
     const body = JSON.stringify({
+      rating: newValue,
+    });
+    let url = "http://localhost:5000/api/agricultural_products/rating/";
+    if (this.state.user.type !== "Client")
+      url = "http://localhost:5000/api/fertilized_products/rating/";
+    axios
+      .post(url + this.props.product._id, body, config)
+      .then((res) => {
+        console.log(res.data);
+        NotificationManager.info("Thank you for your feedback 😇");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  sendOrder = (e) => {
+    e.preventDefault();
+    const config = {
+      headers: { "content-type": "application/json" },
+    };
+    let qte = "";
+    if (this.state.user.type === "Client") {
+      qte = this.props.product.quantity.slice(-2);
+    }
+
+    let server = "localhost:5000";
+    this.socket = io.connect(server);
+    this.socket.emit("sendOrder", {
       Products_Id: this.props.product._id,
       productName: this.props.product.name,
       buyerName: this.state.user.fullName,
       buyerPhone: this.state.user.phone,
       Seller_Id: this.props.product.seller_id,
       Buyer_Id: this.state.user.id,
-      Qty: this.state.qteValue,
+      Qty: this.state.qteValue + qte,
       price: this.props.product.prix,
-      Type: this.state.user.type
+      Type: this.state.user.type,
     });
-
-    axios
-      .post("http://localhost:5000/api/orders/add", body, config)
-      .then(res => console.log(res.data))
-      .catch(error => {
-        console.log(error);
+    if (this.state.user.type === "Farmer") {
+      const bdy = JSON.stringify({
+        fullName: this.state.user.fullName,
+        productName: this.props.product.name,
+        phone: this.state.user.phone,
+        qte: this.state.qteValue + qte,
+        price: this.props.product.prix,
+        email: this.sellerInfo.email,
+        message:
+          "Hello, this costumer want to buy " +
+          this.state.qteValue +
+          qte +
+          "bag(s) of " +
+          this.props.product.name +
+          ", Please contact him if you still have this quantity, thank you 😇.",
       });
+
+      axios
+        .post("http://localhost:5000/api/orders/send", bdy, config)
+        .then((res) => console.log(res.data))
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     this.setState({
       open: false,
       qteValue: 1,
       success: true,
-      price: this.props.product.prix
+      price: this.props.product.prix,
+      value: 0,
     });
     this.imgs = [];
   };
+
   render() {
     let images = this.imgs.map((image, index) => {
       return (
@@ -113,6 +178,7 @@ class ViewMore extends React.Component {
     });
     return (
       <div>
+        <NotificationContainer />
         <center>
           <Button
             color="primary"
@@ -157,13 +223,11 @@ class ViewMore extends React.Component {
                           mb={3}
                           borderColor="transparent"
                         >
-                          <Typography component="legend">Review</Typography>
+                          <Typography component="legend">Feedback</Typography>
                           <Rating
                             name="simple-controlled"
                             value={this.state.value}
-                            onChange={(event, newValue) => {
-                              this.setState({ value: newValue });
-                            }}
+                            onChange={this.handlechangeRating}
                           />
                         </Box>
                         <p>{this.props.product.description}</p>
@@ -182,12 +246,6 @@ class ViewMore extends React.Component {
                                 this.sellerInfo.phone}
                             </a>
                           </span>
-                          <span class="posted_in">
-                            <strong>Country : </strong>
-                            <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.country}
-                            </a>
-                          </span>
                         </div>
                         <div class="product_meta">
                           {this.state.user.type !== "Client" ? (
@@ -200,15 +258,21 @@ class ViewMore extends React.Component {
                               </span>
                               <span class="posted_in">
                                 <strong>Composition : </strong>
-                                <a rel="tag" href="javascript:void(0)">
-                                  {"N : " +
-                                    this.props.product.N +
-                                    "% , P : " +
-                                    this.props.product.P +
-                                    "% ,  K : " +
-                                    this.props.product.K +
-                                    "%"}
-                                </a>
+                                {this.props.product.composition !== null ? (
+                                  <a rel="tag" href="javascript:void(0)">
+                                    {this.props.product.composition}
+                                  </a>
+                                ) : (
+                                  <a rel="tag" href="javascript:void(0)">
+                                    {"N : " +
+                                      this.props.product.N +
+                                      "% , P : " +
+                                      this.props.product.P +
+                                      "% ,  K : " +
+                                      this.props.product.K +
+                                      "%"}
+                                  </a>
+                                )}
                               </span>
                             </div>
                           ) : null}
@@ -230,6 +294,7 @@ class ViewMore extends React.Component {
                                   className="quantity"
                                   name="quantity"
                                   value={this.state.qteValue}
+                                  onChange={this.handleChange}
                                   type="number"
                                 />
                                 <button
@@ -242,6 +307,15 @@ class ViewMore extends React.Component {
                                 <strong>
                                   <a rel="tag" href="javascript:void(0)">
                                     {this.state.price} Dh
+                                    {this.state.user.type === "Client" &&
+                                      (this.props.product.quantity.slice(-2) ===
+                                      " q"
+                                        ? "/q"
+                                        : this.props.product.quantity.slice(
+                                            -2
+                                          ) === "kg"
+                                        ? "/kg"
+                                        : "/t")}
                                   </a>
                                 </strong>
                               </div>
@@ -268,7 +342,7 @@ class ViewMore extends React.Component {
           show={this.state.success}
           success
           title="Order successful"
-          onConfirm={event => this.setState({ success: false })}
+          onConfirm={(event) => this.setState({ success: false })}
         >
           A text message have been sent to the seller!
         </SweetAlert>

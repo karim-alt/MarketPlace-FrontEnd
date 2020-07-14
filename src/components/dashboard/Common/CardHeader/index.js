@@ -1,6 +1,6 @@
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import CardMenu from "../CardMenu";
+// import IconButton from "@material-ui/core/IconButton";
+// import CardMenu from "../CardMenu";
 
 class CardHeader extends React.Component {
   onOptionMenuSelect = event => {
@@ -21,7 +21,7 @@ class CardHeader extends React.Component {
   render() {
     const { heading, subHeading } = this.props;
     let { styleName } = this.props;
-    const { anchorEl, menuState } = this.state;
+    // const { anchorEl, menuState } = this.state;
     return (
       <div className={`jr-card-header d-flex align-items-start ${styleName}`}>
         <div className="mr-auto">

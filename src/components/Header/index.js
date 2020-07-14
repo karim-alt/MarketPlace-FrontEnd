@@ -4,52 +4,55 @@ import { connect } from "react-redux";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
+import jwt_decode from "jwt-decode";
 import { Dropdown, DropdownMenu, DropdownToggle } from "reactstrap";
 import {
   BELOW_THE_HEADER,
   COLLAPSED_DRAWER,
   FIXED_DRAWER,
   HORIZONTAL_NAVIGATION,
-  INSIDE_THE_HEADER
+  INSIDE_THE_HEADER,
 } from "constants/ActionTypes";
 import SearchBox from "components/SearchBox";
 import AppNotification from "../AppNotification/index";
+import AppNotificationAg from "../AppNotification/indexAg";
 import CardHeader from "components/dashboard/Common/CardHeader/index";
 import { switchLanguage, toggleCollapsedNav } from "actions/Setting";
 import IntlMessages from "util/IntlMessages";
 import LanguageSwitcher from "components/LanguageSwitcher/index";
 import Menu from "components/TopNav/Menu";
+// import Badge from "@material-ui/core/Badge";
 
 class Header extends React.Component {
   onAppNotificationSelect = () => {
     this.setState({
-      appNotification: !this.state.appNotification
+      appNotification: !this.state.appNotification,
     });
   };
   onMailNotificationSelect = () => {
     this.setState({
-      mailNotification: !this.state.mailNotification
+      mailNotification: !this.state.mailNotification,
     });
   };
-  onLangSwitcherSelect = event => {
+  onLangSwitcherSelect = (event) => {
     this.setState({
       langSwitcher: !this.state.langSwitcher,
-      anchorEl: event.currentTarget
+      anchorEl: event.currentTarget,
     });
   };
   onSearchBoxSelect = () => {
     this.setState({
-      searchBox: !this.state.searchBox
+      searchBox: !this.state.searchBox,
     });
   };
   onAppsSelect = () => {
     this.setState({
-      apps: !this.state.apps
+      apps: !this.state.apps,
     });
   };
   onUserInfoSelect = () => {
     this.setState({
-      userInfo: !this.state.userInfo
+      userInfo: !this.state.userInfo,
     });
   };
   handleRequestClose = () => {
@@ -59,10 +62,10 @@ class Header extends React.Component {
       mailNotification: false,
       appNotification: false,
       searchBox: false,
-      apps: false
+      apps: false,
     });
   };
-  onToggleCollapsedNav = e => {
+  onToggleCollapsedNav = (e) => {
     const val = !this.props.navCollapsed;
     this.props.toggleCollapsedNav(val);
   };
@@ -76,13 +79,14 @@ class Header extends React.Component {
       mailNotification: false,
       userInfo: false,
       langSwitcher: false,
-      appNotification: false
+      appNotification: false,
+      user: jwt_decode(localStorage.jwtToken),
     };
   }
 
   updateSearchText(evt) {
     this.setState({
-      searchText: evt.target.value
+      searchText: evt.target.value,
     });
   }
 
@@ -91,7 +95,7 @@ class Header extends React.Component {
       drawerType,
       locale,
       navigationStyle,
-      horizontalNavPosition
+      horizontalNavPosition,
     } = this.props;
     const drawerStyle = drawerType.includes(FIXED_DRAWER)
       ? "d-block d-xl-none"
@@ -208,17 +212,27 @@ class Header extends React.Component {
                   data-toggle="dropdown"
                 >
                   <IconButton className="icon-btn">
+                    {/* <Badge
+                      badgeContent={localStorage.counter}
+                      color="secondary"
+                    > */}
                     <i className="zmdi zmdi-notifications-none icon-alert animated infinite wobble" />
+                    {/* </Badge>{" "} */}
                   </IconButton>
                 </DropdownToggle>
-
-                <DropdownMenu right>
-                  <CardHeader
-                    styleName="align-items-center"
-                    heading={<IntlMessages id="appNotification.title" />}
-                  />
-                  <AppNotification />
-                </DropdownMenu>
+                {this.state.user.type !== "Farmer" ? (
+                  <DropdownMenu right>
+                    <CardHeader
+                      styleName="align-items-center"
+                      heading={<IntlMessages id="appNotification.title" />}
+                    />
+                    <AppNotification />
+                  </DropdownMenu>
+                ) : (
+                  <DropdownMenu right>
+                    <AppNotificationAg />
+                  </DropdownMenu>
+                )}
               </Dropdown>
             </li>
           </ul>
@@ -235,7 +249,7 @@ const mapStateToProps = ({ settings }) => {
     drawerType,
     locale,
     navigationStyle,
-    horizontalNavPosition
+    horizontalNavPosition,
   } = settings;
   return { drawerType, locale, navigationStyle, horizontalNavPosition };
 };
