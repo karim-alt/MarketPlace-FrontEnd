@@ -8,6 +8,7 @@ import ViewMoreF from "../../app/routes/components/routes/dialogs/view_more1";
 import SweetAlert from "react-bootstrap-sweetalert";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import IntlMessages from "util/IntlMessages";
 
 class ProductListItem extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class ProductListItem extends React.Component {
       image: null,
       open: false,
       warning: false,
-      user: jwt_decode(localStorage.jwtToken)
+      user: jwt_decode(localStorage.jwtToken),
     };
   }
 
@@ -24,7 +25,7 @@ class ProductListItem extends React.Component {
     if (this.props.product.images.length !== 0) {
       let url = `http://localhost:5000/` + this.props.product.images[0];
 
-      axios.get(url).then(response => {
+      axios.get(url).then((response) => {
         // console.log("response", response);
         this.setState({ image: response.config.url });
       });
@@ -34,7 +35,7 @@ class ProductListItem extends React.Component {
     if (this.props.product.images.length !== 0) {
       let url = `http://localhost:5000/` + this.props.product.images[0];
 
-      axios.get(url).then(response => {
+      axios.get(url).then((response) => {
         // console.log("response", response);
         this.setState({ image: response.config.url });
       });
@@ -47,17 +48,17 @@ class ProductListItem extends React.Component {
       url = "http://localhost:5000/api/agricultural_products/delete/";
     axios
       .delete(url + this.props.product._id)
-      .then(response => {
+      .then((response) => {
         this.setState({
-          warning: false
+          warning: false,
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
 
-  average = array => array.reduce((a, b) => a + b) / array.length;
+  average = (array) => array.reduce((a, b) => a + b) / array.length;
 
   render() {
     return (
@@ -147,7 +148,7 @@ class ProductListItem extends React.Component {
                 <Button
                   style={{
                     Width: "300px",
-                    Height: "300px"
+                    Height: "300px",
                   }}
                   variant="contained"
                   color="secondary"
@@ -157,7 +158,10 @@ class ProductListItem extends React.Component {
                   }}
                 >
                   <i className="zmdi zmdi-delete" />
-                  <span> remove </span>
+                  <span>
+                    {" "}
+                    <IntlMessages id="appModule.Remove" />{" "}
+                  </span>
                 </Button>
               </div>
               <div className="cart-btn mb-2">
@@ -174,17 +178,17 @@ class ProductListItem extends React.Component {
           show={this.state.warning}
           warning
           showCancel
-          confirmBtnText="Yes, Delete it!"
+          confirmBtnText={<IntlMessages id="appModule.confirmBtnText" />}
+          cancelBtnText={<IntlMessages id="appModule.cancelBtnText" />}
           confirmBtnBsStyle="danger"
           cancelBtnBsStyle="default"
-          title="Are you sure?"
+          title={<IntlMessages id="appModule.title" />}
           onConfirm={this.deleteProduct}
           onCancel={() => {
             this.setState({ warning: false });
           }}
         >
-          Do you really want to delete this product? this process cannot be
-          undone
+          {<IntlMessages id="appModule.confirm" />}
         </SweetAlert>
       </div>
     );

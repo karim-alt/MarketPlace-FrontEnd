@@ -138,8 +138,10 @@
 }
 .product_meta1 span {
   display: block;
+
   margin-bottom: 10px;
 }
+
 .product_meta1 a,
 .pro-price {
   color: #fc5959;

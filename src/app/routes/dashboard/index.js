@@ -30,6 +30,15 @@ class Dashboard extends React.Component {
       wheatherTime: null,
       wheatherDesc: null,
       weatherDeg: null,
+      Data: [],
+      DataOrd: [],
+      groupedData: [],
+      names: null,
+      value: null,
+      groupedDataOrd: [],
+      nameOrd: null,
+      Approved: null,
+      OnHold: null,
     };
   }
   handleClick = (value) => (e) => {
@@ -37,7 +46,95 @@ class Dashboard extends React.Component {
     this.setState({ showId: value });
     // console.log("this.state.showId", this.state.showId);
   };
+  sortByMonth(arr) {
+    var months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    arr.sort(function (a, b) {
+      return months.indexOf(a.name) - months.indexOf(b.name);
+    });
+  }
   componentDidMount() {
+    let url1 = "http://localhost:5000/api/orders/myOrders/";
+    /***********************salesstat*********************** */
+    axios
+      .get(url1 + this.state.user.id)
+      .then((response) => {
+        let d = null;
+        let name = [];
+        let value = [];
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        let help1 = 0;
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Type !== this.state.user.type) {
+            if (response.data[i].status === true) {
+              d = new Date(response.data[i].date);
+              name[help1] = monthNames[d.getMonth()];
+              // console.log("name[" + help + "]", name[help]);
+              if (this.state.user.type === "Farmer") {
+                value[help1] =
+                  response.data[i].price *
+                  response.data[i].Qty.slice(
+                    0,
+                    response.data[i].Qty.length - 2
+                  );
+                // console.log("value[" + help + "]", value[help]);
+              } else {
+                value[help1] = response.data[i].price * response.data[i].Qty;
+              }
+              help1++;
+            }
+          }
+        }
+        this.setState({ names: name, value: value });
+        for (let j = 0; j < name.length; j++) {
+          this.setState({
+            Data: this.state.Data.concat({
+              name: this.state.names[j],
+              v: this.state.value[j],
+            }),
+          });
+        }
+        // console.log(this.state.Data);
+        let groupedData = Array.from(
+          this.state.Data.reduce(
+            (m, { name, v }) => m.set(name, (m.get(name) || 0) + v),
+            new Map()
+          ).entries(),
+          ([name, v]) => ({ name, v })
+        );
+        this.sortByMonth(groupedData);
+        this.setState({ groupedData: groupedData });
+        // console.log("grouped", groupedData);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     let url = "http://localhost:5000/api/orders/myOrders/";
 
     axios
@@ -169,13 +266,13 @@ class Dashboard extends React.Component {
                   </div>
                   <ResponsiveContainer width="100%" height={110}>
                     <AreaChart
-                      data={salesStatisticData}
+                      data={this.state.groupedData}
                       margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
                     >
                       <Tooltip />
                       <Area
                         type="monotone"
-                        dataKey="uv"
+                        dataKey="v"
                         stroke="#00BCD4"
                         activeDot={{ r: 8 }}
                         fillOpacity={0.5}
@@ -404,7 +501,10 @@ class Dashboard extends React.Component {
             this.state.showId === "1" ? (
               <div className="row">
                 <div className="col-12">
-                  <SalesStatistic totalRevenue={this.getSum()} />
+                  <SalesStatistic
+                    totalRevenue={this.getSum()}
+                    groupedData={this.state.groupedData}
+                  />
                 </div>
               </div>
             ) : this.state.showId === "2" ? (

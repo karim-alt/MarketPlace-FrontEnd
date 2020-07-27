@@ -92,19 +92,31 @@ class OrderTable extends Component {
                     <table className="default-table table-unbordered table table-sm table-hover">
                       <thead className="th-border-b">
                         <tr>
-                          <th>Product Name</th>
-                          <th>{"Seller"}</th>
-                          <th>{"Phone number"}</th>
                           <th>
-                            Quantity
-                            {this.state.user.type === "Farmer"
-                              ? " (bag)"
-                              : null}
+                            <IntlMessages id="appModule.ProductName" />
                           </th>
-                          <th>Price (dh)</th>
-                          <th>Order Date </th>
+                          <th>
+                            <IntlMessages id="appModule.Seller" />
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.phone" />
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.Quantity" />
+                            {this.state.user.type === "Farmer" ? (
+                              <IntlMessages id="appModule.bag" />
+                            ) : null}
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.Price" />
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.OrderDate" />{" "}
+                          </th>
                           {/* <th className="status-cell text-right"> */}
-                          <th>Status</th>
+                          <th>
+                            <IntlMessages id="appModule.Status" />
+                          </th>
                         </tr>
                       </thead>
                       <tbody>

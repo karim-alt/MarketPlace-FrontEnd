@@ -9,6 +9,7 @@ import StarRatingComponent from "react-star-rating-component";
 import Slide from "@material-ui/core/Slide";
 import Carousel from "react-bootstrap/Carousel";
 import axios from "axios";
+import IntlMessages from "util/IntlMessages";
 class ViewMore extends React.Component {
   imgs = [];
   constructor(props) {
@@ -67,7 +68,7 @@ class ViewMore extends React.Component {
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
-          View more
+          <IntlMessages id="appModule.vMore" />
         </Button>
         <Dialog
           open={this.state.open}
@@ -98,29 +99,37 @@ class ViewMore extends React.Component {
 
                         <div class="product_meta1">
                           <span class="posted_in">
-                            <strong>Countries : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Countries" />
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.country.map((c, i) => {
-                                return c + ", ";
-                              })}
+                              {" : " +
+                                this.props.product.country.map((c, i) => {
+                                  return c + ", ";
+                                })}
                             </a>
                           </span>
 
                           <span class="posted_in">
-                            <strong>Bag weight : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Bagweight" />{" "}
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.bag_weight} kg
+                              {" : " + this.props.product.bag_weight} kg
                             </a>
                           </span>
                           <span class="posted_in">
-                            <strong>Composition : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Composition" />{" "}
+                            </strong>
                             {this.props.product.composition !== null ? (
                               <a rel="tag" href="javascript:void(0)">
-                                {this.props.product.composition}
+                                {" : " + this.props.product.composition}
                               </a>
                             ) : (
                               <a rel="tag" href="javascript:void(0)">
-                                {"N : " +
+                                {" : " +
+                                  "N : " +
                                   this.props.product.N +
                                   "% , P : " +
                                   this.props.product.P +
@@ -131,23 +140,30 @@ class ViewMore extends React.Component {
                             )}
                           </span>
                           <span class="posted_in">
-                            <strong>Quantity :</strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Quantity" />
+                            </strong>
 
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.quantity + " kg"}
+                              {" : " + this.props.product.quantity + " kg"}
                             </a>
                           </span>
                           <span class="posted_in">
-                            <strong>Price :</strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Price" />
+                            </strong>
 
                             <a rel="tag" href="javascript:void(0)">
-                              {this.state.price} Dh
+                              {" : " + this.state.price}
                             </a>
                           </span>
                         </div>
                         <div className="d-flex flex-row">
                           <span class="tagged_as">
-                            <strong>Rating : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Rating" />
+                              {" : "}
+                            </strong>
                           </span>
                           <StarRatingComponent
                             name=""
@@ -178,7 +194,7 @@ class ViewMore extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleRequestClose} color="primary">
-              Ok
+              <IntlMessages id="appModule.Ok" />
             </Button>
           </DialogActions>
         </Dialog>

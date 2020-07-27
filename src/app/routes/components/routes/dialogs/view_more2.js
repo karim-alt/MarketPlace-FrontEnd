@@ -14,6 +14,7 @@ import Carousel from "react-bootstrap/Carousel";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
+import IntlMessages from "util/IntlMessages";
 import {
   NotificationContainer,
   NotificationManager,
@@ -188,8 +189,7 @@ class ViewMore extends React.Component {
           >
             <i className="zmdi zmdi-shopping-cart" />
             <span>
-              {/* <IntlMessages id="eCommerce.buyNow" /> */}
-              Buy
+              <IntlMessages id="eCommerce.buyNow" />
             </span>
           </Button>
         </center>
@@ -223,7 +223,9 @@ class ViewMore extends React.Component {
                           mb={3}
                           borderColor="transparent"
                         >
-                          <Typography component="legend">Feedback</Typography>
+                          <Typography component="legend">
+                            <IntlMessages id="appModule.Feedback" />
+                          </Typography>
                           <Rating
                             name="simple-controlled"
                             value={this.state.value}
@@ -233,17 +235,21 @@ class ViewMore extends React.Component {
                         <p>{this.props.product.description}</p>
                         <div class="product_meta">
                           <span class="posted_in">
-                            <strong>Seller Name : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Seller" />{" "}
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
                               {this.sellerInfo !== null &&
-                                this.sellerInfo.fullName}
+                                " : " + this.sellerInfo.fullName}
                             </a>
                           </span>
                           <span class="posted_in">
-                            <strong>Phone Number : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.phone" />{" "}
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
                               {this.sellerInfo !== null &&
-                                this.sellerInfo.phone}
+                                " : " + this.sellerInfo.phone}
                             </a>
                           </span>
                         </div>
@@ -251,20 +257,25 @@ class ViewMore extends React.Component {
                           {this.state.user.type !== "Client" ? (
                             <div>
                               <span class="posted_in">
-                                <strong>Bag weight : </strong>
+                                <strong style={{ display: "inline-block" }}>
+                                  <IntlMessages id="appModule.Bagweight" />{" "}
+                                </strong>
                                 <a rel="tag" href="javascript:void(0)">
-                                  {this.props.product.bag_weight} kg
+                                  {" : " + this.props.product.bag_weight} kg
                                 </a>
                               </span>
                               <span class="posted_in">
-                                <strong>Composition : </strong>
+                                <strong style={{ display: "inline-block" }}>
+                                  <IntlMessages id="appModule.Composition" />{" "}
+                                </strong>
                                 {this.props.product.composition !== null ? (
                                   <a rel="tag" href="javascript:void(0)">
-                                    {this.props.product.composition}
+                                    {" : " + this.props.product.composition}
                                   </a>
                                 ) : (
                                   <a rel="tag" href="javascript:void(0)">
-                                    {"N : " +
+                                    {" : " +
+                                      "N : " +
                                       this.props.product.N +
                                       "% , P : " +
                                       this.props.product.P +
@@ -279,8 +290,13 @@ class ViewMore extends React.Component {
 
                           <span class="posted_in">
                             <div className="row">
-                              <strong style={{ marginLeft: "16px" }}>
-                                Quantity :
+                              <strong
+                                style={{
+                                  marginLeft: "16px",
+                                  display: "inline-block",
+                                }}
+                              >
+                                <IntlMessages id="appModule.Quantity" />
                               </strong>
                               <div
                                 className="def-number-input number-input"
@@ -303,10 +319,12 @@ class ViewMore extends React.Component {
                                 ></button>
                               </div>
                               <div className="col-md-5 col-5 ">
-                                <strong>Price :</strong>
+                                <strong style={{ display: "inline-block" }}>
+                                  <IntlMessages id="appModule.Price" />
+                                </strong>
                                 <strong>
                                   <a rel="tag" href="javascript:void(0)">
-                                    {this.state.price} Dh
+                                    {" : " + this.state.price} Dh
                                     {this.state.user.type === "Client" &&
                                       (this.props.product.quantity.slice(-2) ===
                                       " q"
@@ -331,20 +349,20 @@ class ViewMore extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.sendOrder} color="secondary">
-              Order Now
+              <IntlMessages id="eCommerce.OrderNow" />
             </Button>
             <Button onClick={this.handleRequestClose} color="primary">
-              Cancel
+              <IntlMessages id="appModule.cancelBtnText" />
             </Button>
           </DialogActions>
         </Dialog>
         <SweetAlert
           show={this.state.success}
           success
-          title="Order successful"
+          title={<IntlMessages id="appModule.OrderSuccessful" />}
           onConfirm={(event) => this.setState({ success: false })}
         >
-          A text message have been sent to the seller!
+          <IntlMessages id="appModule.OrderSuccessfultxt" />
         </SweetAlert>
       </div>
     );

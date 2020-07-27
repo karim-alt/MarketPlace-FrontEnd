@@ -9,6 +9,7 @@ import StarRatingComponent from "react-star-rating-component";
 import Slide from "@material-ui/core/Slide";
 import Carousel from "react-bootstrap/Carousel";
 import axios from "axios";
+import IntlMessages from "util/IntlMessages";
 class ViewMore extends React.Component {
   imgs = [];
   constructor(props) {
@@ -51,7 +52,7 @@ class ViewMore extends React.Component {
     return (
       <div>
         <Button color="primary" onClick={this.handleClickOpen}>
-          View more
+          <IntlMessages id="appModule.vMore" />
         </Button>
         <Dialog
           open={this.state.open}
@@ -80,17 +81,22 @@ class ViewMore extends React.Component {
                         <p>{this.props.product.description}</p>
                         <div class="product_meta1">
                           <span class="posted_in">
-                            <strong>Countries : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Countries" />
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.country.map((c, i) => {
-                                return c + ", ";
-                              })}
+                              {" : " +
+                                this.props.product.country.map((c, i) => {
+                                  return c + ", ";
+                                })}
                             </a>
                           </span>
                           <span class="posted_in">
-                            <strong>Price : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Price" />
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.prix + " Dh"}
+                              {" : " + this.props.product.prix}
                               {this.props.product.quantity.slice(-2) === " q"
                                 ? "/q"
                                 : this.props.product.quantity.slice(-2) === "kg"
@@ -99,16 +105,21 @@ class ViewMore extends React.Component {
                             </a>
                           </span>
                           <span class="posted_in">
-                            <strong>Quantity : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Quantity" />
+                            </strong>
                             <a rel="tag" href="javascript:void(0)">
-                              {this.props.product.quantity}
+                              {" : " + this.props.product.quantity}
                             </a>
                           </span>
                         </div>
 
                         <div className="d-flex flex-row">
                           <span class="tagged_as">
-                            <strong>Rating : </strong>
+                            <strong style={{ display: "inline-block" }}>
+                              <IntlMessages id="appModule.Rating" />
+                              {" : "}
+                            </strong>
                           </span>
                           <StarRatingComponent
                             name=""
@@ -139,7 +150,7 @@ class ViewMore extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleRequestClose} color="primary">
-              Ok
+              <IntlMessages id="appModule.Ok" />
             </Button>
           </DialogActions>
         </Dialog>

@@ -11,7 +11,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import SweetAlert from "react-bootstrap-sweetalert";
 // import Select from "react-select";
-
+import IntlMessages from "util/IntlMessages";
 import countryList from "react-select-country-list";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
@@ -157,7 +157,9 @@ class AddProductDialog extends React.Component {
         >
           {/* <IntlMessages id="eCommerce.addToCart" /> */}
           <i className="zmdi zmdi-shopping-cart-plus" />
-          <span>Add Product</span>
+          <span>
+            <IntlMessages id="appModule.AddProduct" />
+          </span>
         </Button>
 
         <Dialog
@@ -179,10 +181,10 @@ class AddProductDialog extends React.Component {
                   textAlign: "center",
                 }}
               >
-                Add new product
+                <IntlMessages id="appModule.AddNproduct" />
               </Typography>
               <Button color="inherit" onClick={this.handleSave}>
-                save
+                <IntlMessages id="appModule.Save" />
               </Button>
             </Toolbar>
           </AppBar>
@@ -211,7 +213,7 @@ class AddProductDialog extends React.Component {
                             textAlign: "center",
                           }}
                         >
-                          Product images
+                          <IntlMessages id="appModule.ProductImages" />
                         </div>
                         <div className="card-body">
                           <form>
@@ -237,12 +239,15 @@ class AddProductDialog extends React.Component {
 
                   <div className=" col-md-6 col-12 ">
                     <div className="form-group">
-                      <label form="productName">Product name</label>
+                      <label form="productName">
+                        {" "}
+                        <IntlMessages id="appModule.ProductName" />
+                      </label>
                       <input
                         className="form-control form-control-lg"
                         id="productName"
                         type="text"
-                        placeholder="Product Name.."
+                        placeholder=".."
                         defaultValue={this.state.name}
                         onChange={(event) =>
                           this.setState({ name: event.target.value })
@@ -254,13 +259,14 @@ class AddProductDialog extends React.Component {
                   <div className="col-md-3 col-12">
                     <div className="form-group">
                       <label htmlFor="Quantity">
-                        Quantity ({this.state.unit})
+                        <IntlMessages id="appModule.Quantity" /> (
+                        {this.state.unit})
                       </label>
                       <input
                         className="form-control form-control-lg"
                         id="Quantity"
                         type="Number"
-                        placeholder="Quantity.."
+                        placeholder={".."}
                         defaultValue={this.state.quantity}
                         onChange={(event) =>
                           this.setState({ quantity: event.target.value })
@@ -270,11 +276,14 @@ class AddProductDialog extends React.Component {
                   </div>
                   <div className="col-md-3 col-12">
                     <div className="form-group">
-                      <label htmlFor="Unit">Unit </label>
+                      <label htmlFor="Unit">
+                        {" "}
+                        <IntlMessages id="appModule.Unit" />{" "}
+                      </label>
 
                       <select
                         className="form-control form-control-lg"
-                        placeholder="Unit.."
+                        placeholder=".."
                         value={this.state.unit}
                         onChange={this.handleChangeUnit}
                       >
@@ -287,12 +296,16 @@ class AddProductDialog extends React.Component {
 
                   <div className="col-md-6 col-12">
                     <div className="form-group">
-                      <label htmlFor="Prix">Price (Dh/{this.state.unit})</label>
+                      <label htmlFor="Prix">
+                        {" "}
+                        <IntlMessages id="appModule.Price" /> (Dh/
+                        {this.state.unit})
+                      </label>
                       <input
                         className="form-control form-control-lg"
                         id="Prix"
                         type="Number"
-                        placeholder="Price.."
+                        placeholder=".."
                         defaultValue={this.state.prix}
                         onChange={(event) =>
                           this.setState({ prix: event.target.value })
@@ -331,7 +344,7 @@ class AddProductDialog extends React.Component {
                         <TextField
                           {...params}
                           variant="outlined"
-                          label="Countries"
+                          label={<IntlMessages id="appModule.Countries" />}
                           placeholder="Add countries"
                         />
                       )}
@@ -340,11 +353,14 @@ class AddProductDialog extends React.Component {
 
                   <div className="col-12">
                     <div className="form-group">
-                      <label>Description</label>
+                      <label>
+                        {" "}
+                        <IntlMessages id="appModule.Description" />
+                      </label>
                       <textarea
                         className="form-control form-control-lg"
                         rows="6"
-                        placeholder="Product description.."
+                        placeholder=".."
                         defaultValue={this.state.description}
                         onChange={(event) =>
                           this.setState({ description: event.target.value })
@@ -360,10 +376,10 @@ class AddProductDialog extends React.Component {
         <SweetAlert
           show={this.state.success}
           success
-          title="Success"
+          title={<IntlMessages id="sweetAlerts.success"/>}
           onConfirm={(event) => this.setState({ success: false })}
         >
-          Product added successfully!
+          <IntlMessages id="sweetAlerts.Addsuccess"/>
         </SweetAlert>
       </div>
     );

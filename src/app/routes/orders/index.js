@@ -72,32 +72,34 @@ class OrderTable extends Component {
                     <table className="default-table table-unbordered table table-sm table-hover">
                       <thead className="th-border-b">
                         <tr>
-                          <th>Product Name</th>
                           <th>
-                            {this.state.user.type === "Farmer" ||
-                            this.state.user.type === "Provider"
-                              ? "Customer"
-                              : null}
+                            <IntlMessages id="appModule.ProductName" />
                           </th>
                           <th>
-                            {this.state.user.type === "Farmer" ||
-                            this.state.user.type === "Provider"
-                              ? "Phone number"
-                              : null}
+                            <IntlMessages id="appModule.Customer" />
                           </th>
                           <th>
-                            Quantity
-                            {this.state.user.type === "Farmer"
-                              ? null
-                              : this.state.user.type === "Provider"
-                              ? " (bag)"
-                              : null}
+                            <IntlMessages id="appModule.phone" />
                           </th>
-                          <th>Price (dh)</th>
-                          <th>Order Date </th>
+                          <th>
+                            <IntlMessages id="appModule.Quantity" />
+                            {this.state.user.type === "Farmer" ? null : this
+                                .state.user.type === "Provider" ? (
+                              <IntlMessages id="appModule.bag" />
+                            ) : null}
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.Price" />
+                          </th>
+                          <th>
+                            <IntlMessages id="appModule.OrderDate" />
+                          </th>
 
                           {/* <th className="status-cell text-right"> */}
-                          <th>Action</th>
+                          <th>
+                            {" "}
+                            <IntlMessages id="appModule.Action" />
+                          </th>
                         </tr>
                       </thead>
                       <tbody>

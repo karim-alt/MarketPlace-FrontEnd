@@ -7,6 +7,7 @@ import Switch from "@material-ui/core/Switch";
 import jwt_decode from "jwt-decode";
 // import axios from "axios";
 import io from "socket.io-client";
+import IntlMessages from "util/IntlMessages";
 class OrderTableCell extends React.Component {
   constructor(props) {
     super(props);
@@ -102,7 +103,9 @@ class OrderTableCell extends React.Component {
                   name="checked"
                 />
               </Grid>
-              <Grid item>Accept</Grid>
+              <Grid item>
+                <IntlMessages id="appModule.Accept" />
+              </Grid>
             </Grid>
           </Typography>
         </td>

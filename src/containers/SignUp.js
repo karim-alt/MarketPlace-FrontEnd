@@ -215,7 +215,7 @@ class SignUp extends React.Component {
                     onChange={(event) =>
                       this.setState({ email: event.target.value })
                     }
-                    label="Email"
+                    label={<IntlMessages id="signUp.Email" />}
                     // {<IntlMessages id="appModule.email" />}
                     fullWidth
                     defaultValue={email}
@@ -228,7 +228,7 @@ class SignUp extends React.Component {
                     onChange={(event) =>
                       this.setState({ password: event.target.value })
                     }
-                    label="Password*"
+                    label={<IntlMessages id="signUp.Password" />}
                     // {<IntlMessages id="appModule.password" />}
                     fullWidth
                     defaultValue={password}
@@ -240,7 +240,7 @@ class SignUp extends React.Component {
                     onChange={(event) =>
                       this.setState({ confirmPassword: event.target.value })
                     }
-                    label="Confirm password*"
+                    label={<IntlMessages id="signUp.ConfirmPassword" />}
                     // label={<IntlMessages id="appModule.password" />}
                     fullWidth
                     defaultValue={confirmPassword}
@@ -249,15 +249,23 @@ class SignUp extends React.Component {
                   />
                   <div className="mt-0 mb-2">
                     <FormControl className="w-100 mb-2">
-                      <InputLabel htmlFor="Type">Type*</InputLabel>
+                      <InputLabel htmlFor="Type">
+                        <IntlMessages id="signUp.Type" />
+                      </InputLabel>
                       <Select
                         value={type}
                         onChange={this.handleChange("type")}
                         input={<Input id="type" />}
                       >
-                        <MenuItem value="Farmer">Farmer</MenuItem>
-                        <MenuItem value="Provider">Provider</MenuItem>
-                        <MenuItem value="Client">Client</MenuItem>
+                        <MenuItem value="Farmer">
+                          <IntlMessages id="signUp.Farmer" />
+                        </MenuItem>
+                        <MenuItem value="Provider">
+                          <IntlMessages id="signUp.Provider" />
+                        </MenuItem>
+                        <MenuItem value="Client">
+                          <IntlMessages id="signUp.Client" />
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </div>

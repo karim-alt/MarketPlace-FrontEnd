@@ -11,7 +11,6 @@ import {
   YAxis,
 } from "recharts";
 import IntlMessages from "util/IntlMessages";
-import { salesStatisticData } from "../../../app/routes/dashboard/Listing/data";
 
 class SalesStatistic extends React.Component {
   constructor(props) {
@@ -50,11 +49,11 @@ class SalesStatistic extends React.Component {
           <div className="col-lg-12 col-12 mb-5 mb-lg-1">
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart
-                data={salesStatisticData}
+                data={this.props.groupedData}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
                 <XAxis dataKey="name" />
-                <YAxis type="number" domain={[0, 26000]} />
+                <YAxis type="number" />
                 <CartesianGrid strokeDasharray="0" stroke="#DCDEDE" />
 
                 <Tooltip />
@@ -73,7 +72,7 @@ class SalesStatistic extends React.Component {
 
                 <Area
                   type="monotone"
-                  dataKey="uv"
+                  dataKey="v"
                   strokeWidth={2}
                   stroke="#6F82E5"
                   fill="url(#salesStatistic)"

@@ -12,6 +12,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import countryList from "react-select-country-list";
+import IntlMessages from "util/IntlMessages";
 import {
   NotificationContainer,
   NotificationManager,
@@ -178,7 +179,9 @@ class UpdateProductDialog extends React.Component {
         >
           {/* <IntlMessages id="eCommerce.addToCart" /> */}
           <i className="zmdi zmdi zmdi-edit" />
-          <span>Update</span>
+          <span>
+            <IntlMessages id="appModule.Update" />
+          </span>
         </Button>
         <Dialog
           fullScreen
@@ -199,10 +202,10 @@ class UpdateProductDialog extends React.Component {
                   textAlign: "center",
                 }}
               >
-                Add new product
+                <IntlMessages id="appModule.UpdateProduct" />
               </Typography>
               <Button color="inherit" onClick={this.handleSave}>
-                save
+                <IntlMessages id="appModule.Save" />
               </Button>
             </Toolbar>
           </AppBar>
@@ -231,7 +234,7 @@ class UpdateProductDialog extends React.Component {
                             textAlign: "center",
                           }}
                         >
-                          Product images
+                          <IntlMessages id="appModule.ProductImages" />
                         </div>
                         <div className="card-body">
                           <form>
@@ -257,12 +260,14 @@ class UpdateProductDialog extends React.Component {
 
                   <div className=" col-md-6 col-12 ">
                     <div className="form-group">
-                      <label form="productName">Product name</label>
+                      <label form="productName">
+                        <IntlMessages id="appModule.ProductName" />
+                      </label>
                       <input
                         className="form-control form-control-lg"
                         id="productName"
                         type="text"
-                        placeholder="Product Name.."
+                        placeholder=".."
                         defaultValue={this.state.name}
                         onChange={(event) =>
                           this.setState({ name: event.target.value })
@@ -274,13 +279,14 @@ class UpdateProductDialog extends React.Component {
                   <div className="col-md-3 col-12">
                     <div className="form-group">
                       <label htmlFor="Quantity">
-                        Quantity ({this.state.unit})
+                        <IntlMessages id="appModule.Quantity" /> (
+                        {this.state.unit})
                       </label>
                       <input
                         className="form-control form-control-lg"
                         id="Quantity"
                         type="Number"
-                        placeholder="Quantity.."
+                        placeholder=".."
                         defaultValue={this.state.quantity}
                         onChange={(event) =>
                           this.setState({ quantity: event.target.value })
@@ -290,7 +296,9 @@ class UpdateProductDialog extends React.Component {
                   </div>
                   <div className="col-md-3 col-12">
                     <div className="form-group">
-                      <label htmlFor="Unit">Unit </label>
+                      <label htmlFor="Unit">
+                        <IntlMessages id="appModule.Unit" />{" "}
+                      </label>
 
                       <select
                         className="form-control form-control-lg"
@@ -307,12 +315,14 @@ class UpdateProductDialog extends React.Component {
 
                   <div className="col-md-6 col-12">
                     <div className="form-group">
-                      <label htmlFor="Prix">Price (Dh/{this.state.unit})</label>
+                      <label htmlFor="Prix">
+                        <IntlMessages id="appModule.Price" />
+                      </label>
                       <input
                         className="form-control form-control-lg"
                         id="Prix"
                         type="Number"
-                        placeholder="Price.."
+                        placeholder=".."
                         defaultValue={this.state.prix}
                         onChange={(event) =>
                           this.setState({ prix: event.target.value })
@@ -342,7 +352,9 @@ class UpdateProductDialog extends React.Component {
 
                   <div className="col-12">
                     <div className="form-group">
-                      <label>Description</label>
+                      <label>
+                        <IntlMessages id="appModule.Description" />
+                      </label>
                       <textarea
                         className="form-control form-control-lg"
                         rows="6"
@@ -362,10 +374,10 @@ class UpdateProductDialog extends React.Component {
         <SweetAlert
           show={this.state.success}
           success
-          title="Success"
+          title={<IntlMessages id="sweetAlerts.success" />}
           onConfirm={(event) => this.setState({ success: false })}
         >
-          Product updated successfully!
+          <IntlMessages id="sweetAlerts.Updatesuccess" />
         </SweetAlert>
       </div>
     );

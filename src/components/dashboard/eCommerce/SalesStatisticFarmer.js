@@ -18,7 +18,7 @@ class SalesStatistic extends React.Component {
     this.state = {
       id: 0,
       fertilizer: [],
-      salesStatisticData: props.salesStatisticData,
+      salesStatisticData: null,
       name: [],
       price: [],
     };

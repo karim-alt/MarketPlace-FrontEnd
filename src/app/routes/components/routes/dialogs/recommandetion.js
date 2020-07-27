@@ -15,10 +15,11 @@ import "./dialog.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
+import IntlMessages from "util/IntlMessages";
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-const google = window.google;
+// const google = window.google;
 const STYLES = {
   overlayView: {
     background: "#fff",
@@ -27,6 +28,7 @@ const STYLES = {
     padding: 15,
     margin: "auto",
     marginTop: "120px",
+    // marginRigt: "100px",
     width: "60%",
     position: "relative",
     zIndex: 100,
@@ -34,11 +36,8 @@ const STYLES = {
   },
 };
 
-function getPixelPositionOffset(width, height) {
-  return { x: -(width / 2), y: -(height / 2) };
-}
 // let count = 0;
-class DrawingExampleGoogleMap extends React.Component {
+class Recommandations extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -130,9 +129,9 @@ class DrawingExampleGoogleMap extends React.Component {
   handleRequestClose = () => {
     this.setState({
       open: false,
-      N: "",
-      P: "",
-      K: "",
+      N: null,
+      P: null,
+      K: null,
     });
   };
   handleSave = (e) => {
@@ -191,158 +190,155 @@ class DrawingExampleGoogleMap extends React.Component {
   render() {
     return (
       <div
-        style={{
-          zIndex: 0,
-          position: "absolute",
-          height: "100%",
-          width: "100%",
-          backgroundRepeat: "no-repeat",
-          top: 0,
-          left: 0,
-        }}
+      // style={{
+      //   zIndex: 0,
+      //   position: "absolute",
+      //   height: "100%",
+      //   width: "100%",
+      //   backgroundRepeat: "no-repeat",
+      //   top: 0,
+      //   left: 0,
+      // }}
       >
-        <GoogleMap
+        {/* <GoogleMap
           defaultZoom={13}
           defaultCenter={new google.maps.LatLng(32.2307977, -7.9817398)}
-        >
-          <div style={STYLES.overlayView}>
-            <center>
-              <h1>Recommandation</h1>
-            </center>
+        > */}
+        <div style={STYLES.overlayView}>
+          <center>
+            <h1>
+              {" "}
+              <IntlMessages id="appModule.Recommandation" />
+            </h1>
+          </center>
 
-            <div className="row justify-content-md-center">
-              <div className="col-md-4 col-12">
-                <div className="form-group">
-                  <label htmlFor="P (%)">N (kg) </label>
-                  <input
-                    className="form-control form-control-lg"
-                    id="N"
-                    type="Number"
-                    placeholder="N.."
-                    defaultValue={this.state.N}
-                    onChange={(event) =>
-                      this.setState({ N: event.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-md-4 col-12">
-                <div className="form-group">
-                  <label htmlFor="P (%)">P (kg) </label>
-                  <input
-                    className="form-control form-control-lg"
-                    id="P"
-                    type="Number"
-                    placeholder="P.."
-                    defaultValue={this.state.P}
-                    onChange={(event) =>
-                      this.setState({ P: event.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-md-4 col-12">
-                <div className="form-group">
-                  <label htmlFor="K (%)">K (kg) </label>
-                  <input
-                    className="form-control form-control-lg"
-                    id="K"
-                    type="Number"
-                    placeholder="K.."
-                    defaultValue={this.state.K}
-                    onChange={(event) =>
-                      this.setState({ K: event.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <center>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    className="jr-btn jr-btn-sm "
-                    style={{ backgroundColor: "#57B45A" }}
-                    onClick={this.handleClickOpen}
-                  >
-                    {/* <IntlMessages id="eCommerce.addToCart" /> */}
-                    <i className="zmdi zmdi-shopping-cart-plus" />
-                    <span>Show results</span>
-                  </Button>
-                </center>
-                <Dialog
-                  fullScreen
-                  open={this.state.open}
-                  onClose={this.handleRequestClose}
-                  TransitionComponent={Transition}
-                >
-                  <AppBar
-                    className="position-relative"
-                    style={{ backgroundColor: "#57B45A" }}
-                  >
-                    <Toolbar>
-                      <IconButton
-                        onClick={this.handleRequestClose}
-                        aria-label="Close"
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                      <Typography
-                        variant="title"
-                        color="inherit"
-                        style={{
-                          flex: 1,
-                          textAlign: "center",
-                        }}
-                      >
-                        Recommandation
-                      </Typography>
-                      <Button color="inherit" onClick={this.handleSave}>
-                        Order now
-                      </Button>
-                    </Toolbar>
-                  </AppBar>
-
-                  <div className="app-wrapper">
-                    <div className="dashboard animated slideInUpTiny animation-duration-3">
-                      <div className="row  justify-content-md-center animated slideInUpTiny animation-duration-3">
-                        <div className="col-md-12">
-                          <center>
-                            <h3>
-                              Total Price :{" "}
-                              <strong style={{ color: "red" }}>
-                                {" " + this.state.totalPrice + " Dh"}
-                              </strong>
-                            </h3>
-                          </center>
-                        </div>
-
-                        {this.state.products
-                          ? this.state.products.map((product, index) => {
-                              return (
-                                <ProductGridItem
-                                  key={index}
-                                  product={product}
-                                />
-                              );
-                            })
-                          : null}
-                      </div>
-                    </div>
-                  </div>
-                </Dialog>
-                <SweetAlert
-                  show={this.state.success}
-                  success
-                  title="Order successful"
-                  onConfirm={(event) => this.setState({ success: false })}
-                >
-                  A text message have been sent to the seller!
-                </SweetAlert>
+          <div className="row justify-content-md-center">
+            <div className="col-md-4 col-12">
+              <div className="form-group">
+                <label htmlFor="P (%)">N (kg) </label>
+                <input
+                  className="form-control form-control-lg"
+                  id="N"
+                  type="Number"
+                  placeholder="N.."
+                  defaultValue={this.state.N}
+                  onChange={(event) => this.setState({ N: event.target.value })}
+                />
               </div>
             </div>
+            <div className="col-md-4 col-12">
+              <div className="form-group">
+                <label htmlFor="P (%)">P (kg) </label>
+                <input
+                  className="form-control form-control-lg"
+                  id="P"
+                  type="Number"
+                  placeholder="P.."
+                  defaultValue={this.state.P}
+                  onChange={(event) => this.setState({ P: event.target.value })}
+                />
+              </div>
+            </div>
+            <div className="col-md-4 col-12">
+              <div className="form-group">
+                <label htmlFor="K (%)">K (kg) </label>
+                <input
+                  className="form-control form-control-lg"
+                  id="K"
+                  type="Number"
+                  placeholder="K.."
+                  defaultValue={this.state.K}
+                  onChange={(event) => this.setState({ K: event.target.value })}
+                />
+              </div>
+            </div>
+            <div>
+              <center>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  className="jr-btn jr-btn-sm "
+                  style={{ backgroundColor: "#57B45A" }}
+                  onClick={this.handleClickOpen}
+                >
+                  {/* <IntlMessages id="eCommerce.addToCart" /> */}
+                  <i className="zmdi zmdi-shopping-cart-plus" />
+                  <span>
+                    {" "}
+                    <IntlMessages id="appModule.ShowResults" />
+                  </span>
+                </Button>
+              </center>
+              <Dialog
+                fullScreen
+                open={this.state.open}
+                onClose={this.handleRequestClose}
+                TransitionComponent={Transition}
+              >
+                <AppBar
+                  className="position-relative"
+                  style={{ backgroundColor: "#57B45A" }}
+                >
+                  <Toolbar>
+                    <IconButton
+                      onClick={this.handleRequestClose}
+                      aria-label="Close"
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <Typography
+                      variant="title"
+                      color="inherit"
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                      }}
+                    >
+                      <IntlMessages id="appModule.Recommandation" />
+                    </Typography>
+                    <Button color="inherit" onClick={this.handleSave}>
+                      <IntlMessages id="eCommerce.OrderNow" />
+                    </Button>
+                  </Toolbar>
+                </AppBar>
+
+                <div className="app-wrapper">
+                  <div className="dashboard animated slideInUpTiny animation-duration-3">
+                    <div className="row  justify-content-md-center animated slideInUpTiny animation-duration-3">
+                      <div className="col-md-12">
+                        <center>
+                          <h3>
+                            <IntlMessages id="appModule.TotPrice" />
+                            <strong style={{ color: "red" }}>
+                              {" : " + this.state.totalPrice + " Dh"}
+                            </strong>
+                          </h3>
+                        </center>
+                      </div>
+
+                      {this.state.products
+                        ? this.state.products.map((product, index) => {
+                            return (
+                              <ProductGridItem key={index} product={product} />
+                            );
+                          })
+                        : null}
+                    </div>
+                  </div>
+                </div>
+              </Dialog>
+              <SweetAlert
+                show={this.state.success}
+                success
+                title={<IntlMessages id="appModule.OrderSuccessful" />}
+                onConfirm={(event) => this.setState({ success: false })}
+              >
+                <IntlMessages id="appModule.OrderSuccessfultxt" />
+              </SweetAlert>
+            </div>
           </div>
-          <DrawingManager
+        </div>
+        {/* <DrawingManager
             // defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
             defaultOptions={{
               drawingControl: true,
@@ -371,10 +367,10 @@ class DrawingExampleGoogleMap extends React.Component {
               },
             }}
           />
-        </GoogleMap>
+        </GoogleMap> */}
       </div>
     );
   }
 }
 
-export default withGoogleMap(DrawingExampleGoogleMap);
+export default Recommandations;

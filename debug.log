@@ -1,3 +1,4 @@
 [0529/033334.371:ERROR:process_info.cc(329)] VirtualQueryEx: Accès refusé. (0x5)
 [0529/033334.373:ERROR:process_info.cc(556)] ReadMemoryInfo failed
 [0529/033334.373:ERROR:process_memory_win.cc(39)] Failed to initialize ProcessInfo.
+[0727/152650.253:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: L’opération a réussi. (0x0)

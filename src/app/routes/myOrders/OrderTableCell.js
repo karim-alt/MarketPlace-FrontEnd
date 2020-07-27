@@ -2,6 +2,7 @@ import React from "react";
 import jwt_decode from "jwt-decode";
 import Avatar from "@material-ui/core/Avatar";
 import axios from "axios";
+import IntlMessages from "util/IntlMessages";
 class OrderTableCell extends React.Component {
   sellerInfo = null;
   constructor() {
@@ -56,10 +57,13 @@ class OrderTableCell extends React.Component {
         <td className="status-cell text-left">
           {order.status === true ? (
             <div className={` badge text-uppercase text-white bg-success`}>
-              Approved
+              <IntlMessages id="appModule.Approved" />
             </div>
           ) : (
-            <div className={` badge text-uppercase bg-amber`}>On Hold</div>
+            <div className={` badge text-uppercase bg-amber`}>
+              {" "}
+              <IntlMessages id="appModule.Hold" />
+            </div>
           )}
         </td>
         <td></td>
